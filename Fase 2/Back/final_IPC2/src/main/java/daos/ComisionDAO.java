@@ -30,7 +30,7 @@ public class ComisionDAO {
                 ResultSet rs = ps.executeQuery()) {
             if (rs.next()) return rs.getDouble("porcentaje");
         }
-        return 0.10; // Default 10%
+        return 10.00; // Default 10%
     }
     
     public void setComision(int adminId, Double porcentaje) throws SQLException {

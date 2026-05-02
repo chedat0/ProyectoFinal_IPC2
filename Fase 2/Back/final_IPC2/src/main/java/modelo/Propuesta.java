@@ -14,7 +14,7 @@ public class Propuesta {
     private Integer id;
     private Integer proyectoId;
     private Integer freelancerId;
-    private Double montoOfertado;
+    private double montoOfertado;
     private Integer plazoDias;
     private String cartaPresentacion;
     private String estado; // PENDIENTE, ACEPTADA, RECHAZADA, RETIRADA
@@ -50,7 +50,7 @@ public class Propuesta {
         this.freelancerId = freelancerId;
     }
 
-    public Double getMontoOfertado() {
+    public double getMontoOfertado() {
         return montoOfertado;
     }
 
