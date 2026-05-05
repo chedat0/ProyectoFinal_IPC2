@@ -4,9 +4,25 @@
         <servlet-name>ClienteServlet</servlet-name>
         <servlet-class>controlador.ClienteServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FreelancerServlet</servlet-name>
+        <servlet-class>controlador.FreelancerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>controlador.AdminServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ClienteServlet</servlet-name>
         <url-pattern>/Cliente</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FreelancerServlet</servlet-name>
+        <url-pattern>/api/freelancer/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/api/admin/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

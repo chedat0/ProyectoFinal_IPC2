@@ -19,6 +19,16 @@ public class GsonConfig {
     private static final DateTimeFormatter DATE_FMT     = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATETIME_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .serializeNulls()
+            .setPrettyPrinting()
+            .create();
+    
+    public static Gson getGson() {
+        return INSTANCE;
+    }
     private static final Gson INSTANCE = new GsonBuilder()
         .registerTypeAdapter(LocalDate.class,     new LocalDateAdapter())
         .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
