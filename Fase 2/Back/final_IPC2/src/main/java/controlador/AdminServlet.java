@@ -138,10 +138,10 @@ public class AdminServlet extends HttpServlet {
 
             } else if (path.equals("/reportes/ingresos")) {
                 String fechaInicio = req.getParameter("fechaInicio");
-                String fechaFin = req.getParameter("fechaFin");                
+                String fechaFin = req.getParameter("fechaFin");
                 Map<String, Object> ingresos = reporteDAO.ingresosTotales(fechaInicio, fechaFin);
                 RespuestasServlet.ok(resp, gson.toJsonTree(ingresos));
-                
+
             } else {
                 RespuestasServlet.notFound(resp, "Ruta no encontrada");
             }
@@ -252,7 +252,10 @@ public class AdminServlet extends HttpServlet {
             } else if (path.matches("/categorias/\\d+/toggle")) {
                 int id = Integer.parseInt(path.split("/")[2]);
                 Categoria cat = categoriaDAO.obtenerPorId(id);
-                if (cat == null ) {RespuestasServlet.notFound(resp, "Categoria no encontrada"); return;}
+                if (cat == null) {
+                    RespuestasServlet.notFound(resp, "Categoria no encontrada");
+                    return;
+                }
                 categoriaDAO.toggleActiva(id, !cat.getActiva());
                 RespuestasServlet.ok(resp, "Estado de categoria actualizado");
 
@@ -278,7 +281,10 @@ public class AdminServlet extends HttpServlet {
             } else if (path.matches("/habilidades/\\d+/toggle")) {
                 int id = Integer.parseInt(path.split("/")[2]);
                 Habilidad hab = habilidadDAO.obtenerPorId(id);
-                if (hab == null) {RespuestasServlet.notFound(resp, "Habilidad no encontrada"); return;}
+                if (hab == null) {
+                    RespuestasServlet.notFound(resp, "Habilidad no encontrada");
+                    return;
+                }
                 habilidadDAO.toggleActiva(id, !hab.getActiva());
                 RespuestasServlet.ok(resp, "Estado de habilidad actualizado");
 
@@ -288,6 +294,18 @@ public class AdminServlet extends HttpServlet {
                 int adminUserId = ((Number) claims.get("userId")).intValue();
                 Administrador admin = adminDAO.obtenerPorUsuarioId(adminUserId);
                 solicitudDAO.responderHabilidad(id, admin.getId(), estado);
+
+                if ("ACEPTADA".equals(estado)) {
+                    SolicitudHabilidad sol = solicitudDAO.obtenerHabilidadPorId(id);
+                    // categoriaId debe venir en el body al aprobar
+                    if (sol != null && json.has("categoriaId")) {
+                        Habilidad nueva = new Habilidad();
+                        nueva.setNombre(sol.getNombre());
+                        nueva.setDescripcion(sol.getDescripcion());
+                        nueva.setCategoriaId(json.get("categoriaId").getAsInt());
+                        habilidadDAO.ingresar(nueva);
+                    }
+                }
                 RespuestasServlet.ok(resp, "Solicitud de habilidad procesada");
 
             } else if (path.matches("/solicitudes-categoria/\\d+")) {
@@ -296,6 +314,17 @@ public class AdminServlet extends HttpServlet {
                 int adminUserId = ((Number) claims.get("userId")).intValue();
                 Administrador admin = adminDAO.obtenerPorUsuarioId(adminUserId);
                 solicitudDAO.responderCategoria(id, admin.getId(), estado);
+
+                if ("ACEPTADA".equals(estado)) {
+                    SolicitudCategoria sol = solicitudDAO.obtenerCategoriaPorId(id);
+                    if (sol != null) {
+                        Categoria nueva = new Categoria();
+                        nueva.setNombre(sol.getNombre());
+                        nueva.setDescripcion(sol.getDescripcion());
+                        categoriaDAO.ingresar(nueva);
+                    }
+                }
+                
                 RespuestasServlet.ok(resp, "Solicitud de categoria procesada");
 
             } else if (path.matches("/comision")) {

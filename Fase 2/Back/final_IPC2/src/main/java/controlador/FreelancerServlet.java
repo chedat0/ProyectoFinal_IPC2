@@ -163,7 +163,7 @@ public class FreelancerServlet extends HttpServlet {
         Claims claims = validateFreelancer(req, resp);
         if (claims == null) return;
 
-        int usuarioId = claims.get("userId", Integer.class);
+        int usuarioId = ((Number) claims.get("userId")).intValue();
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
@@ -240,7 +240,7 @@ public class FreelancerServlet extends HttpServlet {
         Claims claims = validateFreelancer(req, resp);
         if (claims == null) return;
 
-        int usuarioId = claims.get("userId", Integer.class);
+        int usuarioId = ((Number) claims.get("userId")).intValue();
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
@@ -281,7 +281,7 @@ public class FreelancerServlet extends HttpServlet {
         Claims claims = validateFreelancer(req, resp);
         if (claims == null) return;
 
-        int usuarioId = claims.get("userId", Integer.class);
+        int usuarioId = ((Number) claims.get("userId")).intValue();
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
