@@ -4,7 +4,6 @@
  */
 package controlador;
 
-
 import otros.GsonConfig;
 import daos.*;
 import modelo.*;
@@ -23,16 +22,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
 
 /**
  *
  * @author jeffm
  */
-
 @WebServlet(name = "AdminServlet", urlPatterns = {"/api/admin/*"})
 public class AdminServlet extends HttpServlet {
+
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
     private final AdministradorDAO adminDAO = new AdministradorDAO();
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
@@ -64,14 +63,19 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Claims claims = validateAdmin(req, resp);
-        if (claims == null) return;
+        if (claims == null) {
+            return;
+        }
 
         String path = req.getPathInfo();
-        if (path == null) path = "/";
+        if (path == null) {
+            path = "/";
+        }
 
         try {
             if (path.equals("/usuarios")) {
-                List<Usuario> usuarios = usuarioDAO.obtenerTodos(path);
+                String tipo = req.getParameter("tipo");
+                List<Usuario> usuarios = usuarioDAO.obtenerTodos(tipo);
                 RespuestasServlet.ok(resp, gson.toJsonTree(usuarios));
 
             } else if (path.equals("/categorias")) {
@@ -79,8 +83,8 @@ public class AdminServlet extends HttpServlet {
                 RespuestasServlet.ok(resp, gson.toJsonTree(categorias));
 
             } else if (path.equals("/habilidades")) {
-                Integer catId = req.getParameter("categoriaId") != null ?
-                    Integer.parseInt(req.getParameter("categoriaId")) : null;
+                Integer catId = req.getParameter("categoriaId") != null
+                        ? Integer.parseInt(req.getParameter("categoriaId")) : null;
                 List<Habilidad> habilidades = habilidadDAO.obtenerTodas(catId, false);
                 RespuestasServlet.ok(resp, gson.toJsonTree(habilidades));
 
@@ -93,7 +97,9 @@ public class AdminServlet extends HttpServlet {
                 RespuestasServlet.ok(resp, gson.toJsonTree(solis));
 
             } else if (path.equals("/comision-actual")) {
-                ConfiguracionComision comision = comisionDAO.obtenerComisionActual();
+                Double porcentajeActual = comisionDAO.obtenerComisionActual();
+                JsonObject comision = new JsonObject();
+                comision.addProperty("porcentaje", porcentajeActual);
                 RespuestasServlet.ok(resp, gson.toJsonTree(comision));
 
             } else if (path.equals("/comision/historial")) {
@@ -107,23 +113,35 @@ public class AdminServlet extends HttpServlet {
                 RespuestasServlet.ok(resp, res);
 
             } else if (path.equals("/reportes/top-freelancers")) {
-                int limit = req.getParameter("limit") != null ? Integer.parseInt(req.getParameter("limit")) : 10;
-                List<?> top = reporteDAO.topFreelancers(limit);
+                String fi = req.getParameter("fechaInicio");
+                String ff = req.getParameter("fechaFin");
+                if (fi == null) {
+                    fi = java.time.LocalDate.now().withDayOfYear(1).toString();
+                }
+                if (ff == null) {
+                    ff = java.time.LocalDate.now().toString();
+                }
+                List<?> top = reporteDAO.topFreelancers(fi, ff);
                 RespuestasServlet.ok(resp, gson.toJsonTree(top));
 
             } else if (path.equals("/reportes/top-categorias")) {
-                int limit = req.getParameter("limit") != null ? Integer.parseInt(req.getParameter("limit")) : 10;
-                List<?> top = reporteDAO.topCategorias(limit);
+                String fi = req.getParameter("fechaInicio");
+                String ff = req.getParameter("fechaFin");
+                if (fi == null) {
+                    fi = java.time.LocalDate.now().withDayOfYear(1).toString();
+                }
+                if (ff == null) {
+                    ff = java.time.LocalDate.now().toString();
+                }
+                List<?> top = reporteDAO.topCategorias(fi, ff);
                 RespuestasServlet.ok(resp, gson.toJsonTree(top));
 
             } else if (path.equals("/reportes/ingresos")) {
                 String fechaInicio = req.getParameter("fechaInicio");
-                String fechaFin = req.getParameter("fechaFin");
-                LocalDate fi = fechaInicio != null ? LocalDate.parse(fechaInicio) : null;
-                LocalDate ff = fechaFin != null ? LocalDate.parse(fechaFin) : null;
-                List<?> ingresos = reporteDAO.ingresosTotales(fi, ff);
+                String fechaFin = req.getParameter("fechaFin");                
+                Map<String, Object> ingresos = reporteDAO.ingresosTotales(fechaInicio, fechaFin);
                 RespuestasServlet.ok(resp, gson.toJsonTree(ingresos));
-
+                
             } else {
                 RespuestasServlet.notFound(resp, "Ruta no encontrada");
             }
@@ -135,10 +153,14 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Claims claims = validateAdmin(req, resp);
-        if (claims == null) return;
+        if (claims == null) {
+            return;
+        }
 
         String path = req.getPathInfo();
-        if (path == null) path = "/";
+        if (path == null) {
+            path = "/";
+        }
 
         try {
             String body = req.getReader().lines().collect(Collectors.joining());
@@ -163,19 +185,25 @@ public class AdminServlet extends HttpServlet {
                 String username = json.get("username").getAsString();
                 String correo = json.get("correo").getAsString();
                 if (usuarioDAO.existePorUsuario(username)) {
-                    RespuestasServlet.badRequest(resp, "Username ya existe"); return;
+                    RespuestasServlet.badRequest(resp, "Username ya existe");
+                    return;
                 }
                 if (usuarioDAO.existePorCorreo(correo)) {
-                    RespuestasServlet.badRequest(resp, "Correo ya registrado"); return;
+                    RespuestasServlet.badRequest(resp, "Correo ya registrado");
+                    return;
                 }
                 Usuario u = new Usuario();
                 u.setUsername(username);
                 u.setCorreo(correo);
                 u.setPasswordHash(BCrypt.hashpw(json.get("password").getAsString(), BCrypt.gensalt(12)));
-                u.setNombreCompleto(json.get("nombre_completo").getAsString());                
-                if (json.has("cui")) u.setCui(json.get("cui").getAsString());
-                if (json.has("telefono")) u.setTelefono(json.get("telefono").getAsString());
-                u.setRol("ADMINISTRADOR");
+                u.setNombreCompleto(json.get("nombre_completo").getAsString());
+                if (json.has("cui")) {
+                    u.setCui(json.get("cui").getAsString());
+                }
+                if (json.has("telefono")) {
+                    u.setTelefono(json.get("telefono").getAsString());
+                }
+                u.setTipoUsuario("ADMINISTRADOR");
                 Usuario creado = usuarioDAO.ingresar(u);
                 String nivelAcceso = json.has("nivelAcceso") ? json.get("nivelAcceso").getAsString() : "ESTANDAR";
                 Administrador admin = adminDAO.ingresar(creado.getId(), nivelAcceso);
@@ -192,10 +220,14 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Claims claims = validateAdmin(req, resp);
-        if (claims == null) return;
+        if (claims == null) {
+            return;
+        }
 
         String path = req.getPathInfo();
-        if (path == null) path = "/";
+        if (path == null) {
+            path = "/";
+        }
 
         try {
             String body = req.getReader().lines().collect(Collectors.joining());
@@ -204,59 +236,83 @@ public class AdminServlet extends HttpServlet {
             if (path.matches("/categorias/\\d+$")) {
                 int id = Integer.parseInt(path.split("/")[2]);
                 Categoria cat = categoriaDAO.obtenerPorId(id);
-                if (cat == null) { RespuestasServlet.notFound(resp, "Categoria no encontrada"); return; }
-                if (json.has("nombre")) cat.setNombre(json.get("nombre").getAsString());
-                if (json.has("descripcion")) cat.setDescripcion(json.get("descripcion").getAsString());
+                if (cat == null) {
+                    RespuestasServlet.notFound(resp, "Categoria no encontrada");
+                    return;
+                }
+                if (json.has("nombre")) {
+                    cat.setNombre(json.get("nombre").getAsString());
+                }
+                if (json.has("descripcion")) {
+                    cat.setDescripcion(json.get("descripcion").getAsString());
+                }
                 categoriaDAO.actualizar(cat);
                 RespuestasServlet.ok(resp, gson.toJsonTree(cat));
 
             } else if (path.matches("/categorias/\\d+/toggle")) {
                 int id = Integer.parseInt(path.split("/")[2]);
-                categoriaDAO.toggleActiva(id);
+                Categoria cat = categoriaDAO.obtenerPorId(id);
+                if (cat == null ) {RespuestasServlet.notFound(resp, "Categoria no encontrada"); return;}
+                categoriaDAO.toggleActiva(id, !cat.getActiva());
                 RespuestasServlet.ok(resp, "Estado de categoria actualizado");
 
             } else if (path.matches("/habilidades/\\d+$")) {
                 int id = Integer.parseInt(path.split("/")[2]);
                 Habilidad hab = habilidadDAO.obtenerPorId(id);
-                if (hab == null) { RespuestasServlet.notFound(resp, "Habilidad no encontrada"); return; }
-                if (json.has("nombre")) hab.setNombre(json.get("nombre").getAsString());
-                if (json.has("descripcion")) hab.setDescripcion(json.get("descripcion").getAsString());
-                if (json.has("categoriaId")) hab.setCategoriaId(json.get("categoriaId").getAsInt());
+                if (hab == null) {
+                    RespuestasServlet.notFound(resp, "Habilidad no encontrada");
+                    return;
+                }
+                if (json.has("nombre")) {
+                    hab.setNombre(json.get("nombre").getAsString());
+                }
+                if (json.has("descripcion")) {
+                    hab.setDescripcion(json.get("descripcion").getAsString());
+                }
+                if (json.has("categoriaId")) {
+                    hab.setCategoriaId(json.get("categoriaId").getAsInt());
+                }
                 habilidadDAO.actualizar(hab);
                 RespuestasServlet.ok(resp, gson.toJsonTree(hab));
 
             } else if (path.matches("/habilidades/\\d+/toggle")) {
                 int id = Integer.parseInt(path.split("/")[2]);
-                habilidadDAO.toggleActiva(id);
+                Habilidad hab = habilidadDAO.obtenerPorId(id);
+                if (hab == null) {RespuestasServlet.notFound(resp, "Habilidad no encontrada"); return;}
+                habilidadDAO.toggleActiva(id, !hab.getActiva());
                 RespuestasServlet.ok(resp, "Estado de habilidad actualizado");
 
             } else if (path.matches("/solicitudes-habilidad/\\d+")) {
                 int id = Integer.parseInt(path.split("/")[2]);
                 String estado = json.get("estado").getAsString();
-                String comentario = json.has("comentario") ? json.get("comentario").getAsString() : null;
-                solicitudDAO.responderHabilidad(id, estado, comentario);
+                int adminUserId = ((Number) claims.get("userId")).intValue();
+                Administrador admin = adminDAO.obtenerPorUsuarioId(adminUserId);
+                solicitudDAO.responderHabilidad(id, admin.getId(), estado);
                 RespuestasServlet.ok(resp, "Solicitud de habilidad procesada");
 
             } else if (path.matches("/solicitudes-categoria/\\d+")) {
                 int id = Integer.parseInt(path.split("/")[2]);
                 String estado = json.get("estado").getAsString();
-                String comentario = json.has("comentario") ? json.get("comentario").getAsString() : null;
-                solicitudDAO.responderCategoria(id, estado, comentario);
+                int adminUserId = ((Number) claims.get("userId")).intValue();
+                Administrador admin = adminDAO.obtenerPorUsuarioId(adminUserId);
+                solicitudDAO.responderCategoria(id, admin.getId(), estado);
                 RespuestasServlet.ok(resp, "Solicitud de categoria procesada");
 
             } else if (path.matches("/comision")) {
                 Double porcentaje = json.get("porcentaje").getAsDouble();
                 if (porcentaje < 0 || porcentaje > 100) {
-                    RespuestasServlet.badRequest(resp, "Porcentaje debe estar entre 0 y 100"); return;
+                    RespuestasServlet.badRequest(resp, "Porcentaje debe estar entre 0 y 100");
+                    return;
                 }
-                int adminUserId = claims.get("userId", Integer.class);
+                int adminUserId = ((Number) claims.get("userId")).intValue();
                 Administrador admin = adminDAO.obtenerPorUsuarioId(adminUserId);
-                comisionDAO.setComision(porcentaje, admin.getId());
+                comisionDAO.setComision(admin.getId(), porcentaje);
                 RespuestasServlet.ok(resp, gson.toJsonTree(comisionDAO.obtenerComisionActual()));
 
             } else if (path.matches("/usuarios/\\d+/toggle")) {
                 int id = Integer.parseInt(path.split("/")[2]);
-                usuarioDAO.toggleActivo(id);
+                Usuario u = usuarioDAO.obtenerPorId(id);
+                usuarioDAO.toggleActivo(id, !u.getActivo());
                 RespuestasServlet.ok(resp, "Estado de usuario actualizado");
 
             } else {

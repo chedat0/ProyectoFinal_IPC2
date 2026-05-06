@@ -66,7 +66,7 @@ public class FreelancerServlet extends HttpServlet {
         Claims claims = validateFreelancer(req, resp);
         if (claims == null) return;
 
-        int usuarioId = claims.get("userId", Integer.class);
+        int usuarioId = ((Number) claims.get("userId")).intValue();
         String path = req.getPathInfo();
         if (path == null) path = "/";
 
@@ -81,8 +81,8 @@ public class FreelancerServlet extends HttpServlet {
             } else if (path.equals("/proyectos")) {
                 Integer categoriaId = parseIntParam(req, "categoriaId");
                 Integer habilidadId = parseIntParam(req, "habilidadId");
-                Double presMin = parseDoubleParam(req, "presupuestoMin");
-                Double presMax = parseDoubleParam(req, "presupuestoMax");
+                String presMin = req.getParameter("presupuestoMin");
+                String presMax = req.getParameter( "presupuestoMax");
                 List<Proyecto> proyectos = proyectoDAO.obtenerAbiertos(categoriaId, habilidadId, presMin, presMax);
                 RespuestasServlet.ok(resp, gson.toJsonTree(proyectos));
 
@@ -95,7 +95,7 @@ public class FreelancerServlet extends HttpServlet {
             // GET /api/freelancer/contratos
             } else if (path.equals("/contratos")) {
                 Freelancer f = freelancerDAO.obtenerPorUsuarioId(usuarioId);
-                List<Contrato> contratos = contratoDAO.obtenerPorFreelancer(f.getId());
+                List<Contrato> contratos = contratoDAO.obtenerPorFreelancer(f.getId(), null);
                 RespuestasServlet.ok(resp, gson.toJsonTree(contratos));
 
             // GET /api/freelancer/contratos/{id}
@@ -129,10 +129,8 @@ public class FreelancerServlet extends HttpServlet {
             } else if (path.equals("/reportes/contratos")) {
                 Freelancer f = freelancerDAO.obtenerPorUsuarioId(usuarioId);
                 String fechaInicio = req.getParameter("fechaInicio");
-                String fechaFin = req.getParameter("fechaFin");
-                LocalDate fi = fechaInicio != null ? LocalDate.parse(fechaInicio) : null;
-                LocalDate ff = fechaFin != null ? LocalDate.parse(fechaFin) : null;
-                List<?> rep = reporteDAO.contratosCompletadosFreelancer(f.getId(), fi, ff);
+                String fechaFin = req.getParameter("fechaFin");                
+                List<?> rep = reporteDAO.contratosCompletadosFreelancer(f.getId(), fechaInicio, fechaFin);
                 RespuestasServlet.ok(resp, gson.toJsonTree(rep));
 
             // GET /api/freelancer/reportes/categorias
@@ -194,8 +192,8 @@ public class FreelancerServlet extends HttpServlet {
                 propuesta.setProyectoId(proyectoId);
                 propuesta.setFreelancerId(f.getId());
                 propuesta.setMontoOfertado(json.get("montoOfertado").getAsDouble());
-                propuesta.setTiempoEntregaDias(json.get("tiempoEntregaDias").getAsInt());
-                propuesta.setMensaje(json.has("mensaje") ? json.get("mensaje").getAsString() : null);
+                propuesta.setPlazoDias(json.get("tiempoEntregaDias").getAsInt());
+                propuesta.setCartaPresentacion(json.has("mensaje") ? json.get("mensaje").getAsString() : null);
 
                 Propuesta creada = propuestaDAO.ingresar(propuesta);
                 RespuestasServlet.created(resp, gson.toJsonTree(creada));
@@ -222,9 +220,10 @@ public class FreelancerServlet extends HttpServlet {
             // POST /api/freelancer/solicitudes-habilidad
             } else if (path.equals("/solicitudes-habilidad")) {
                 SolicitudHabilidad sol = new SolicitudHabilidad();
+                Freelancer f = freelancerDAO.obtenerPorUsuarioId(usuarioId);
+                sol.setFreelancerId(f.getId());
                 sol.setNombre(json.get("nombre").getAsString());
-                sol.setDescripcion(json.has("descripcion") ? json.get("descripcion").getAsString() : null);
-                sol.setCategoriaId(json.has("categoriaId") ? json.get("categoriaId").getAsInt() : 0);
+                sol.setDescripcion(json.has("descripcion") ? json.get("descripcion").getAsString() : null);                
                 SolicitudHabilidad creada = solicitudDAO.crearHabilidad(sol);
                 RespuestasServlet.created(resp, gson.toJsonTree(creada));
 
@@ -259,7 +258,7 @@ public class FreelancerServlet extends HttpServlet {
                 if (json.has("portafolioUrl")) f.setPortafolioUrl(json.get("portafolioUrl").getAsString());
                 if (json.has("paisResidencia")) f.setPaisResidencia(json.get("paisResidencia").getAsString());
                 freelancerDAO.actualizarPerfil(f);
-                RespuestasServlet.ok(resp, gson.toJsonTree(freelancerDAO.findByUsuarioId(usuarioId)));
+                RespuestasServlet.ok(resp, gson.toJsonTree(freelancerDAO.obtenerPorUsuarioId(usuarioId)));
 
             // PUT /api/freelancer/habilidades
             } else if (path.equals("/habilidades")) {
@@ -298,7 +297,7 @@ public class FreelancerServlet extends HttpServlet {
                 if (!"PENDIENTE".equals(p.getEstado())) {
                     RespuestasServlet.badRequest(resp, "Solo puedes eliminar propuestas pendientes"); return;
                 }
-                propuestaDAO.delete(propuestaId);
+                propuestaDAO.actualizarEstado(propuestaId, "RETIRADA");
                 RespuestasServlet.ok(resp, "Propuesta eliminada");
 
             } else {

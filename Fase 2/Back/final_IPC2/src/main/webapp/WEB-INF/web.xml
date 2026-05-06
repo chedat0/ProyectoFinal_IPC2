@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" version="6.0">
+    <display-name>final_IPC2</display-name>
+    
+    <filter>
+        <filter-name>CorsFiltro</filter-name>
+        <filter-class>otros.CorsFiltro</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>CorsFiltro</filter-name>
+        <url-pattern>/api/*</url-pattern>
+    </filter-mapping>
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>controlador.AuthServlet</servlet-class>
+    </servlet>
     <servlet>
         <servlet-name>ClienteServlet</servlet-name>
         <servlet-class>controlador.ClienteServlet</servlet-class>
@@ -13,8 +27,12 @@
         <servlet-class>controlador.AdminServlet</servlet-class>
     </servlet>
     <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/api/auth/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ClienteServlet</servlet-name>
-        <url-pattern>/Cliente</url-pattern>
+        <url-pattern>/api/cliente/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FreelancerServlet</servlet-name>
@@ -26,7 +44,7 @@
     </servlet-mapping>
     <session-config>
         <session-timeout>
-            30
+            60
         </session-timeout>
     </session-config>
 </web-app>

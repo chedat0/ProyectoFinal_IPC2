@@ -56,7 +56,8 @@ public class JWT {
     }
 
     public static int getUserId(String token) {
-        return validarToken(token).get("userId", Integer.class);
+        Object userId = validarToken(token).get("userId");
+        return ((Number)userId).intValue();
     }
 
     public static String getUsername(String token) {
