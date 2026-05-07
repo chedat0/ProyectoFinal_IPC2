@@ -1,0 +1,19 @@
+export interface Entrega {
+    id: number;
+    contratoId: number;
+    descripcion: string;
+    estado: 'PENDIENTE' | 'APROBADA' | 'RECHAZADA';
+    fechaEnvio: string;
+    fechaRevision?: string;
+    comentarioRevision?: string;
+    archivos?: EntregaArchivo[];
+}
+
+export interface EntregaArchivo {
+    id: number;
+    entregaId: number;
+    nombreArchivo: string;
+    urlArchivo: string;
+    tipoArchivo?: string;
+    tamanoBytes?: number;
+}
