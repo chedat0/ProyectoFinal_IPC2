@@ -1,0 +1,46 @@
+<div class="auth-page">
+    <div class="auth-panel">
+        <div class="auth-brand">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
+                <path d="M10 70 Q30 30 50 40 Q70 30 90 70" stroke="#BA6648" stroke-width="8" fill="none"
+                    stroke-linecap="round" />
+                <path d="M22 68 Q36 42 50 48 Q64 42 78 68" stroke="#BA6648" stroke-width="7" fill="none"
+                    stroke-linecap="round" opacity=".75" />
+                <path d="M34 66 Q42 54 50 57 Q58 54 66 66" stroke="#BA6648" stroke-width="6" fill="none"
+                    stroke-linecap="round" opacity=".55" />
+                <circle cx="50" cy="76" r="5" fill="#BA6648" />
+            </svg>
+            <span>ConnectWork</span>
+        </div>
+        <h1>Bienvenido de nuevo</h1>
+        <p class="auth-sub">Ingresa tus credenciales para acceder a tu cuenta</p>
+        @if (error) { <div class="alert alert-error">{{ error }}</div> }
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="form-group">
+                <label>Usuario o correo</label>
+                <input formControlName="username" placeholder="tu_usuario"
+                    [class.error]="f['username'].touched && f['username'].invalid" autocomplete="username">
+                @if (f['username'].touched && f['username'].errors?.['required']) {
+                <span class="field-error">Este campo es requerido</span>
+                }
+            </div>
+            <div class="form-group">
+                <label>Contraseña</label>
+                <div class="input-wrap">
+                    <input [type]="showPass ? 'text' : 'password'" formControlName="password" placeholder="••••••••"
+                        [class.error]="f['password'].touched && f['password'].invalid" autocomplete="current-password">
+                    <button type="button" class="pass-toggle" (click)="showPass=!showPass">{{ showPass ? '🙈' : '👁️'
+                        }}</button>
+                </div>
+                @if (f['password'].touched && f['password'].errors?.['required']) {
+                <span class="field-error">Este campo es requerido</span>
+                }
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+                @if (loading) { <span class="btn-spinner"></span> } Iniciar sesión
+            </button>
+        </form>
+        <p class="auth-footer">¿No tienes cuenta? <a routerLink="/auth/registro">Regístrate gratis</a></p>
+    </div>
+    <app-footer />
+</div>

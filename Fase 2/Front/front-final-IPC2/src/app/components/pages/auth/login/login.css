@@ -1,0 +1,97 @@
+.auth-page {
+    min-height: 100vh;
+    background: var(--crema);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem
+}
+
+.auth-panel {
+    background: var(--blanco);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: var(--shadow-md)
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin-bottom: 1.75rem;
+
+    span {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: var(--pizarra)
+    }
+}
+
+h1 {
+    font-size: 1.5rem;
+    margin-bottom: .3rem
+}
+
+.auth-sub {
+    color: #888;
+    font-size: .875rem;
+    margin-bottom: 1.5rem
+}
+
+.input-wrap {
+    position: relative;
+
+    input {
+        width: 100%;
+        padding-right: 3rem
+    }
+}
+
+.pass-toggle {
+    position: absolute;
+    right: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: .25rem
+}
+
+.btn-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, .4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: inline-block
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+.auth-footer {
+    margin-top: 1.25rem;
+    font-size: .85rem;
+    color: #888;
+    text-align: center;
+
+    a {
+        color: var(--terracota);
+        font-weight: 600
+    }
+}
+
+app-footer {
+    width: 100%
+}
