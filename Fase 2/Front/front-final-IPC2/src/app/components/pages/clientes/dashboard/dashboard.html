@@ -1,1 +1,82 @@
-<p>dashboard works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <div class="page-header-row">
+            <div>
+                <h1>Mi Panel</h1>
+                <p>Resumen de tu actividad en ConnectWork</p>
+            </div>
+            <a routerLink="/cliente/proyectos" class="btn btn-primary">+ Nuevo proyecto</a>
+        </div>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon">📁</div>
+            <div class="stat-val">{{ stats.proyectos }}</div>
+            <div class="stat-label">Proyectos publicados</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🟢</div>
+            <div class="stat-val">{{ stats.activos }}</div>
+            <div class="stat-label">Proyectos abiertos</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div class="stat-val">{{ stats.contratos }}</div>
+            <div class="stat-label">Contratos generados</div>
+        </div>
+        <div class="stat-card saldo-card">
+            <div class="stat-icon">💳</div>
+            <div class="stat-val">Q{{ stats.saldo | number:"1.2-2" }}</div>
+            <div class="stat-label">Saldo disponible</div>
+        </div>
+    </div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-head">
+                <h3>Proyectos recientes</h3><a routerLink="/cliente/proyectos" class="btn btn-ghost btn-sm">Ver todos
+                    →</a>
+            </div>
+            @if (proyectos.length === 0) { <div class="empty-state">
+                <div class="empty-icon">📁</div>
+                <h3>Sin proyectos aún</h3>
+            </div> }
+            @for (p of proyectos; track p.id) {
+            <div class="list-row">
+                <div>
+                    <div class="row-title">{{ p.titulo }}</div>
+                    <div class="row-meta">{{ p.categoriaNombre }}</div>
+                </div>
+                <span class="badge"
+                    [ngClass]="{'badge-success':p.estado==='ABIERTO','badge-neutral':p.estado==='EN_PROGRESO','badge-terra':p.estado==='COMPLETADO'}">{{
+                    p.estado }}</span>
+            </div>
+            }
+        </div>
+        <div class="card">
+            <div class="card-head">
+                <h3>Contratos activos</h3><a routerLink="/cliente/contratos" class="btn btn-ghost btn-sm">Ver todos
+                    →</a>
+            </div>
+            @if (contratos.length === 0) { <div class="empty-state">
+                <div class="empty-icon">📄</div>
+                <h3>Sin contratos activos</h3>
+            </div> }
+            @for (c of contratos; track c.id) {
+            <div class="list-row">
+                <div>
+                    <div class="row-title">{{ c.proyectoTitulo }}</div>
+                    <div class="row-meta">Q{{ c.monto | number:"1.2-2" }}</div>
+                </div>
+                <span class="badge"
+                    [ngClass]="{'badge-success':c.estado==='ACTIVO','badge-neutral':c.estado==='COMPLETADO'}">{{
+                    c.estado }}</span>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</app-layout>

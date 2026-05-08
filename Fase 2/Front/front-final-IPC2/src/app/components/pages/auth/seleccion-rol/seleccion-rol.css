@@ -1,0 +1,125 @@
+.picker-page {
+    min-height: 100vh;
+    background: var(--crema);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem
+}
+
+.picker-card {
+    background: var(--blanco);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 560px;
+    box-shadow: var(--shadow-md);
+    text-align: center
+}
+
+.picker-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    margin-bottom: 1.5rem
+}
+
+.picker-logo-text {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--pizarra)
+}
+
+h1 {
+    font-size: 1.6rem;
+    margin-bottom: .4rem
+}
+
+.picker-sub {
+    color: #888;
+    font-size: .9rem;
+    margin-bottom: 1.75rem
+}
+
+.role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem
+}
+
+.role-card {
+    position: relative;
+    background: var(--blanco);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all .2s;
+    font-family: 'Inter', sans-serif;
+
+    &:hover {
+        border-color: var(--pizarra);
+        background: var(--crema)
+    }
+
+    &.active {
+        border-color: var(--pizarra);
+        background: rgba(51, 58, 68, .04)
+    }
+
+    .role-radio {
+        position: absolute;
+        top: .85rem;
+        right: .85rem;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        transition: all .18s;
+
+        &.checked {
+            border-color: var(--pizarra);
+            background: var(--pizarra);
+            box-shadow: inset 0 0 0 3px #fff
+        }
+    }
+
+    .role-icon {
+        font-size: 1.75rem;
+        margin-bottom: .6rem
+    }
+
+    h3 {
+        font-size: .95rem;
+        font-weight: 700;
+        color: var(--pizarra);
+        margin-bottom: .3rem
+    }
+
+    p {
+        font-size: .78rem;
+        color: #888;
+        line-height: 1.45
+    }
+}
+
+.picker-footer {
+    margin-top: 1.25rem;
+    font-size: .85rem;
+    color: #888;
+
+    a {
+        color: var(--terracota);
+        font-weight: 600
+    }
+}
+
+app-footer {
+    width: 100%
+}

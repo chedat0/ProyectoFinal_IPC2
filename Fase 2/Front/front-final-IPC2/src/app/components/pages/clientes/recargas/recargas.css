@@ -1,0 +1,34 @@
+.recarga-row {
+    display: flex;
+    justify-content: space-between;
+    padding: .7rem 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+        border: none
+    }
+}
+
+.r-metodo {
+    font-weight: 600;
+    font-size: .88rem
+}
+
+.r-ref {
+    font-size: .75rem;
+    color: #aaa
+}
+
+.r-right {
+    text-align: right
+}
+
+.r-monto {
+    font-weight: 700;
+    color: var(--success)
+}
+
+.r-fecha {
+    font-size: .75rem;
+    color: #aaa
+}

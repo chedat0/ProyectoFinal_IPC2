@@ -1,1 +1,37 @@
-<p>seleccion-rol works!</p>
+<div class="picker-page">
+    <div class="picker-card">
+        <div class="picker-logo">
+            <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
+                <path d="M10 70 Q30 30 50 40 Q70 30 90 70" stroke="#BA6648" stroke-width="8" fill="none"
+                    stroke-linecap="round" />
+                <path d="M22 68 Q36 42 50 48 Q64 42 78 68" stroke="#BA6648" stroke-width="7" fill="none"
+                    stroke-linecap="round" opacity=".75" />
+                <path d="M34 66 Q42 54 50 57 Q58 54 66 66" stroke="#BA6648" stroke-width="6" fill="none"
+                    stroke-linecap="round" opacity=".55" />
+                <circle cx="50" cy="76" r="5" fill="#BA6648" />
+            </svg>
+            <span class="picker-logo-text">ConnectWork</span>
+        </div>
+        <h1>Únete a ConnectWork</h1>
+        <p class="picker-sub">¿Cómo quieres usar la plataforma?</p>
+        <div class="role-grid">
+            <button class="role-card" [class.active]="selected==='CLIENTE'" (click)="selected='CLIENTE'">
+                <div class="role-radio" [class.checked]="selected==='CLIENTE'"></div>
+                <div class="role-icon">🏢</div>
+                <h3>Soy cliente</h3>
+                <p>Publico proyectos y contrato freelancers para mi empresa o negocio</p>
+            </button>
+            <button class="role-card" [class.active]="selected==='FREELANCER'" (click)="selected='FREELANCER'">
+                <div class="role-radio" [class.checked]="selected==='FREELANCER'"></div>
+                <div class="role-icon">💼</div>
+                <h3>Soy freelancer</h3>
+                <p>Ofrezco mis servicios y habilidades a empresas y emprendedores</p>
+            </button>
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" [disabled]="!selected" (click)="continuar()">
+            Continuar →
+        </button>
+        <p class="picker-footer">¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a></p>
+    </div>
+    <app-footer />
+</div>

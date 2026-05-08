@@ -1,0 +1,121 @@
+.top-bar {
+    height: 60px;
+    background: var(--blanco);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 1.75rem;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: var(--shadow-sm)
+}
+
+.tb-brand {
+    display: flex;
+    align-items: center;
+    gap: .6rem
+}
+
+.tb-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--pizarra)
+}
+
+.tb-right {
+    position: relative
+}
+
+.tb-user {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    cursor: pointer;
+    padding: .4rem .7rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--blanco);
+    transition: all .15s;
+
+    &:hover {
+        background: var(--crema)
+    }
+}
+
+.tb-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--terracota);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: .85rem
+}
+
+.tb-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2
+}
+
+.tb-username {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--pizarra)
+}
+
+.tb-role {
+    font-size: .72rem;
+    color: var(--terracota);
+    font-weight: 500
+}
+
+.tb-caret {
+    color: #aaa;
+    font-size: .7rem
+}
+
+.tb-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + .5rem);
+    background: var(--blanco);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    min-width: 180px;
+    box-shadow: var(--shadow-md);
+    z-index: 200;
+    overflow: hidden
+}
+
+.tb-drop-item {
+    width: 100%;
+    padding: .8rem 1rem;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: .875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--error);
+    transition: background .15s;
+
+    &:hover {
+        background: var(--crema)
+    }
+}
+
+.tb-logo {
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+}

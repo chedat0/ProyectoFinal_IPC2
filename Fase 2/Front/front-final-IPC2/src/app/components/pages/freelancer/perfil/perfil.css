@@ -1,0 +1,6 @@
+.chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-top: .4rem
+}

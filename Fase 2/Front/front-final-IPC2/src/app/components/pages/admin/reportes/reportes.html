@@ -1,1 +1,105 @@
-<p>reportes works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Reportes de Plataforma</h1>
+        <p>Analiza el rendimiento global de ConnectWork</p>
+    </div>
+    <div class="card" style="margin-bottom:1.5rem">
+        <div class="tabs">
+            <button class="tab-btn" [class.active]="tab==='ingresos'" (click)="cambiar('ingresos')">💹 Ingresos
+                totales</button>
+            <button class="tab-btn" [class.active]="tab==='freelancers'" (click)="cambiar('freelancers')">⭐ Top
+                Freelancers</button>
+            <button class="tab-btn" [class.active]="tab==='categorias'" (click)="cambiar('categorias')">🗂️ Top
+                Categorías</button>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="cargar()"
+            style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem">
+            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Desde</label><input
+                    formControlName="fechaInicio" type="date"></div>
+            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Hasta</label><input
+                    formControlName="fechaFin" type="date"></div>
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </form>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading && datos !== null) {
+    @if (tab === 'ingresos') {
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div class="stat-val">{{ datos?.contratos_completados || 0 }}</div>
+            <div class="stat-label">Contratos completados</div>
+        </div>
+        <div class="stat-card" style="border-top:3px solid var(--terracota)">
+            <div class="stat-icon">💰</div>
+            <div class="stat-val">Q{{ (datos?.total_comisiones || 0) | number:'1.2-2' }}</div>
+            <div class="stat-label">Comisiones cobradas</div>
+        </div>
+    </div>
+    }
+    @if (tab === 'freelancers') {
+    @if (asArray().length === 0) { <div class="empty-state card">
+        <div class="empty-icon">⭐</div>
+        <h3>Sin datos para el período</h3>
+    </div> }
+    @if (asArray().length > 0) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Freelancer</th>
+                    <th>Contratos</th>
+                    <th>Total generado</th>
+                    <th>Comisión plataforma</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (d of asArray(); track $index) {
+                <tr>
+                    <td><span class="rank">{{ $index + 1 }}</span></td>
+                    <td><strong>{{ d.nombre_completo }}</strong></td>
+                    <td>{{ d.contratos }}</td>
+                    <td>Q{{ d.total_generado | number:'1.2-2' }}</td>
+                    <td>Q{{ d.comision_plataforma | number:'1.2-2' }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    }
+    @if (tab === 'categorias') {
+    @if (asArray().length === 0) { <div class="empty-state card">
+        <div class="empty-icon">🗂️</div>
+        <h3>Sin datos para el período</h3>
+    </div> }
+    @if (asArray().length > 0) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Categoría</th>
+                    <th>Contratos</th>
+                    <th>Total comisiones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (d of asArray(); track $index) {
+                <tr>
+                    <td><span class="rank">{{ $index + 1 }}</span></td>
+                    <td><strong>{{ d.nombre }}</strong></td>
+                    <td>{{ d.contratos }}</td>
+                    <td>Q{{ d.total_comisiones | number:'1.2-2' }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    }
+    }
+</app-layout>

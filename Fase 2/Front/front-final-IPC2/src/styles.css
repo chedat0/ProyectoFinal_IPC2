@@ -616,3 +616,9 @@ textarea {
         display: none;
     }
 }
+
+.auth-logo {
+    height: 44px;
+    width: auto;
+    object-fit: contain;
+}

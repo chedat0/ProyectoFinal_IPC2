@@ -1,1 +1,139 @@
-<p>solicitudes works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Solicitudes</h1>
+        <p>Aprueba o rechaza solicitudes de habilidades y categorías</p>
+    </div>
+    @if (error && !showModal) { <div class="alert alert-error">{{ error }}</div> }
+    @if (success) { <div class="alert alert-success">{{ success }}</div> }
+    <div class="tabs">
+        <button class="tab-btn" [class.active]="tab==='habilidades'" (click)="tab='habilidades'">
+            Habilidades <span class="tab-badge">{{ pendientesH().length }}</span>
+        </button>
+        <button class="tab-btn" [class.active]="tab==='categorias'" (click)="tab='categorias'">
+            Categorías <span class="tab-badge">{{ pendientesC().length }}</span>
+        </button>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    @if (tab === 'habilidades') {
+    @if (solHabilidades.length === 0) { <div class="empty-state card">
+        <div class="empty-icon">📬</div>
+        <h3>Sin solicitudes de habilidades</h3>
+    </div> }
+    @if (solHabilidades.length > 0) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>Habilidad solicitada</th>
+                    <th>Freelancer</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (s of solHabilidades; track s.id) {
+                <tr>
+                    <td><strong>{{ s.nombre }}</strong></td>
+                    <td>{{ s.freelancerNombre }}</td>
+                    <td><span class="text-truncate">{{ s.descripcion || '—' }}</span></td>
+                    <td>{{ s.fechaSolicitud | date:'dd/MM/yyyy' }}</td>
+                    <td><span class="badge"
+                            [ngClass]="{'badge-warning':s.estado==='PENDIENTE','badge-success':s.estado==='ACEPTADA','badge-error':s.estado==='RECHAZADA'}">{{
+                            s.estado }}</span></td>
+                    <td>@if (s.estado==='PENDIENTE'){<button class="btn btn-outline btn-sm"
+                            (click)="abrir(s)">Responder</button>}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    }
+    @if (tab === 'categorias') {
+    @if (solCategorias.length === 0) { <div class="empty-state card">
+        <div class="empty-icon">📬</div>
+        <h3>Sin solicitudes de categorías</h3>
+    </div> }
+    @if (solCategorias.length > 0) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>Categoría solicitada</th>
+                    <th>Cliente</th>
+                    <th>Descripción</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (s of solCategorias; track s.id) {
+                <tr>
+                    <td><strong>{{ s.nombre }}</strong></td>
+                    <td>{{ s.clienteNombre }}</td>
+                    <td>{{ s.descripcion || '—' }}</td>
+                    <td>{{ s.fechaSolicitud | date:'dd/MM/yyyy' }}</td>
+                    <td><span class="badge"
+                            [ngClass]="{'badge-warning':s.estado==='PENDIENTE','badge-success':s.estado==='ACEPTADA','badge-error':s.estado==='RECHAZADA'}">{{
+                            s.estado }}</span></td>
+                    <td>@if (s.estado==='PENDIENTE'){<button class="btn btn-outline btn-sm"
+                            (click)="abrir(s)">Responder</button>}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    }
+    }
+    @if (showModal) {
+    <div class="modal-overlay" (click)="showModal=false">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Responder solicitud</h2><button class="modal-close" (click)="showModal=false">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="sol-info">
+                    <div class="sol-nombre">{{ solSel?.nombre }}</div>
+                    <div class="sol-desc">{{ solSel?.descripcion }}</div>
+                </div>
+                @if (error) { <div class="alert alert-error">{{ error }}</div> }
+                <form [formGroup]="respForm">
+                    <div class="form-group"><label>Decisión *</label>
+                        <select formControlName="estado">
+                            <option value="ACEPTADA">✓ Aceptar — se creará en la plataforma</option>
+                            <option value="RECHAZADA">✕ Rechazar</option>
+                        </select>
+                    </div>
+                    @if (tab === 'habilidades' && estadoVal === 'ACEPTADA') {
+                    <div class="form-group"><label>Asignar a categoría *</label>
+                        <select formControlName="categoriaId"
+                            [class.error]="rf['categoriaId'].touched && rf['categoriaId'].invalid">
+                            <option value="">Seleccionar categoría...</option>
+                            @for (c of categorias; track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }
+                        </select>
+                        @if (rf['categoriaId'].touched && rf['categoriaId'].errors?.['required']) { <span
+                            class="field-error">Requerido</span> }
+                    </div>
+                    }
+                    <div class="form-group"><label>Comentario</label><textarea formControlName="comentario" rows="3"
+                            placeholder="Mensaje opcional para el solicitante..."></textarea></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="showModal=false">Cancelar</button>
+                <button class="btn" [ngClass]="estadoVal==='ACEPTADA'?'btn-success':'btn-danger'" (click)="responder()"
+                    [disabled]="saving">
+                    {{ saving ? 'Procesando...' : estadoVal==='ACEPTADA' ? '✓ Aceptar' : '✕ Rechazar' }}
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+</app-layout>

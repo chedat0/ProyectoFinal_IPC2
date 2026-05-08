@@ -1,0 +1,41 @@
+.contrato-card {
+    margin-bottom: 1rem
+}
+
+.ct-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+
+    h3 {
+        font-size: 1rem;
+        margin: 0
+    }
+}
+
+.ct-meta {
+    font-size: .8rem;
+    color: #888;
+    margin-top: .2rem
+}
+
+.ct-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .3rem
+}
+
+.ct-monto {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--pizarra)
+}
+
+.ct-neto {
+    font-size: .8rem;
+    color: var(--success);
+    font-weight: 600
+}

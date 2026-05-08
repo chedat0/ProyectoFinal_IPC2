@@ -1,1 +1,82 @@
-<p>habilidades works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <div class="page-header-row">
+            <div>
+                <h1>Habilidades</h1>
+                <p>Gestiona las habilidades disponibles en la plataforma</p>
+            </div><button class="btn btn-primary" (click)="nuevo()">+ Nueva habilidad</button>
+        </div>
+    </div>
+    @if (error && !showModal) { <div class="alert alert-error">{{ error }}</div> }
+    @if (success) { <div class="alert alert-success">{{ success }}</div> }
+    <div class="filter-row card">
+        <select [(ngModel)]="filtroCategoria"
+            style="flex:1;padding:.65rem 1rem;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:.9rem">
+            <option value="">Todas las categorías</option>
+            @for (c of categorias; track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }
+        </select>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>Habilidad</th>
+                    <th>Categoría</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (h of filtradas; track h.id) {
+                <tr>
+                    <td><strong>{{ h.nombre }}</strong></td>
+                    <td>{{ h.categoriaNombre }}</td>
+                    <td><span class="badge" [ngClass]="h.activa?'badge-success':'badge-error'">{{
+                            h.activa?'Activa':'Inactiva' }}</span></td>
+                    <td>
+                        <div class="actions"><button class="btn btn-outline btn-sm"
+                                (click)="editar(h)">Editar</button><button class="btn btn-sm"
+                                [ngClass]="h.activa?'btn-danger':'btn-success'" (click)="toggle(h)">{{
+                                h.activa?'Desactivar':'Activar' }}</button></div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    @if (showModal) {
+    <div class="modal-overlay" (click)="showModal=false">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ editando?'Editar':'Nueva' }} habilidad</h2><button class="modal-close"
+                    (click)="showModal=false">✕</button>
+            </div>
+            <div class="modal-body">
+                @if (error) { <div class="alert alert-error">{{ error }}</div> }
+                <form [formGroup]="form">
+                    <div class="form-group"><label>Nombre *</label><input formControlName="nombre"
+                            placeholder="Ej: Angular, Docker, Figma"
+                            [class.error]="f['nombre'].touched && f['nombre'].invalid"></div>
+                    <div class="form-group"><label>Categoría *</label>
+                        <select formControlName="categoriaId"
+                            [class.error]="f['categoriaId'].touched && f['categoriaId'].invalid">
+                            <option value="">Seleccionar...</option>
+                            @for (c of categorias; track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Descripción</label><textarea formControlName="descripcion" rows="2"
+                            placeholder="Descripción opcional..."></textarea></div>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-ghost" (click)="showModal=false">Cancelar</button><button
+                    class="btn btn-primary" (click)="guardar()" [disabled]="saving">{{ saving?'Guardando...':'Guardar'
+                    }}</button></div>
+        </div>
+    </div>
+    }
+</app-layout>

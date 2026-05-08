@@ -1,1 +1,55 @@
-<p>recargas works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Recargar saldo</h1>
+        <p>Agrega fondos para contratar proyectos</p>
+    </div>
+    <div class="grid-2" style="align-items:start">
+        <div class="card">
+            <h2 style="margin-bottom:1.25rem;font-size:1.1rem">Nueva recarga</h2>
+            @if (error) { <div class="alert alert-error">{{ error }}</div> }
+            @if (success) { <div class="alert alert-success">{{ success }}</div> }
+            <form [formGroup]="form" (ngSubmit)="recargar()">
+                <div class="form-group"><label>Monto (Q) *</label>
+                    <input formControlName="monto" type="number" placeholder="500"
+                        [class.error]="f['monto'].touched && f['monto'].invalid">
+                    @if (f['monto'].touched && f['monto'].errors?.['min']) { <span class="field-error">Mínimo Q1</span>
+                    }
+                </div>
+                <div class="form-group"><label>Método de pago *</label>
+                    <select formControlName="metodoPago">
+                        <option value="TRANSFERENCIA">Transferencia bancaria</option>
+                        <option value="DEPOSITO">Depósito</option>
+                        <option value="TARJETA">Tarjeta</option>
+                        <option value="EFECTIVO">Efectivo</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Referencia / Número de operación</label><input
+                        formControlName="referencia" placeholder="REF-001"></div>
+                <button type="submit" class="btn btn-primary btn-block" [disabled]="saving">{{ saving ? 'Procesando...'
+                    : 'Recargar saldo' }}</button>
+            </form>
+        </div>
+        <div class="card">
+            <h2 style="margin-bottom:1.25rem;font-size:1.1rem">Historial de recargas</h2>
+            @if (loading) { <div class="spinner-wrap">
+                <div class="spinner"></div>
+            </div> }
+            @if (!loading && historial.length === 0) { <div class="empty-state">
+                <div class="empty-icon">💳</div>
+                <h3>Sin recargas</h3>
+            </div> }
+            @for (r of historial; track r.id) {
+            <div class="recarga-row">
+                <div>
+                    <div class="r-metodo">{{ r.metodoPago }}</div>
+                    <div class="r-ref">{{ r.referencia || '—' }}</div>
+                </div>
+                <div class="r-right">
+                    <div class="r-monto">Q{{ r.monto | number:'1.2-2' }}</div>
+                    <div class="r-fecha">{{ r.fecha | date:'dd/MM/yyyy' }}</div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</app-layout>

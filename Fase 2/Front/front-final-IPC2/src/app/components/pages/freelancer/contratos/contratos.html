@@ -1,1 +1,63 @@
-<p>contratos works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Mis Contratos</h1>
+        <p>Gestiona tus contratos y envía entregas</p>
+    </div>
+    @if (error) { <div class="alert alert-error">{{ error }}</div> }
+    @if (success) { <div class="alert alert-success">{{ success }}</div> }
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    @if (contratos.length === 0) { <div class="empty-state card">
+        <div class="empty-icon">📄</div>
+        <h3>Sin contratos activos</h3>
+    </div> }
+    @for (c of contratos; track c.id) {
+    <div class="contrato-card card">
+        <div class="ct-head">
+            <div>
+                <h3>{{ c.proyectoTitulo }}</h3>
+                <div class="ct-meta">Cliente: {{ c.clienteNombre }} · Inicio: {{ c.fechaInicio | date:'dd/MM/yyyy' }}
+                </div>
+            </div>
+            <div class="ct-right">
+                <span class="badge"
+                    [ngClass]="{'badge-success':c.estado==='ACTIVO','badge-neutral':c.estado==='COMPLETADO','badge-error':c.estado==='CANCELADO'}">{{
+                    c.estado }}</span>
+                <div class="ct-monto">Q{{ c.monto | number:'1.2-2' }}</div>
+                <div class="ct-neto" *ngIf="c.estado==='ACTIVO'">Recibirás: Q{{ (c.monto * (1 -
+                    c.porcentajeComision/100)) | number:'1.2-2' }}</div>
+            </div>
+        </div>
+        @if (c.estado === 'ACTIVO') {
+        <button class="btn btn-primary btn-sm" (click)="abrir(c.id)">📤 Enviar entrega</button>
+        }
+    </div>
+    }
+    }
+    @if (showModal) {
+    <div class="modal-overlay" (click)="showModal=false">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Enviar entrega</h2><button class="modal-close" (click)="showModal=false">✕</button>
+            </div>
+            <div class="modal-body">
+                @if (error) { <div class="alert alert-error">{{ error }}</div> }
+                <form [formGroup]="entForm">
+                    <div class="form-group"><label>Descripción de la entrega *</label><textarea
+                            formControlName="descripcion" rows="5"
+                            placeholder="Describe qué has completado, enlaza repositorios, archivos, etc."
+                            [class.error]="ef['descripcion'].touched && ef['descripcion'].invalid"></textarea>
+                        @if (ef['descripcion'].touched && ef['descripcion'].errors?.['required']) { <span
+                            class="field-error">Requerido</span> }
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer"><button class="btn btn-ghost" (click)="showModal=false">Cancelar</button><button
+                    class="btn btn-primary" (click)="enviar()" [disabled]="sending">{{ sending ? 'Enviando...' : 'Enviar
+                    entrega' }}</button></div>
+        </div>
+    </div>
+    }
+</app-layout>

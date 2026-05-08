@@ -1,1 +1,62 @@
-<p>comision works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Configuración de Comisión</h1>
+        <p>Define el porcentaje que retiene la plataforma por contrato completado</p>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    <div class="grid-2" style="align-items:start">
+        <div class="card">
+            @if (comision) {
+            <div class="comision-actual">
+                <div class="ca-label">Comisión actual</div>
+                <div class="ca-valor">{{ comision.porcentaje }}%</div>
+                <div class="ca-fecha">Vigente desde {{ comision.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</div>
+            </div>
+            }
+            <div class="divider"></div>
+            <h3 style="margin-bottom:1rem">Actualizar comisión</h3>
+            @if (error) { <div class="alert alert-error">{{ error }}</div> }
+            @if (success) { <div class="alert alert-success">{{ success }}</div> }
+            <form [formGroup]="form" (ngSubmit)="guardar()">
+                <div class="form-group">
+                    <label>Nuevo porcentaje (0–100%) *</label>
+                    <div class="pct-input-wrap">
+                        <input formControlName="porcentaje" type="number" min="0" max="100" step="0.5" placeholder="10"
+                            [class.error]="f['porcentaje'].touched && f['porcentaje'].invalid">
+                        <span class="pct-symbol">%</span>
+                    </div>
+                    @if (f['porcentaje'].touched && f['porcentaje'].errors?.['min']) { <span class="field-error">Mínimo
+                        0%</span> }
+                    @if (f['porcentaje'].touched && f['porcentaje'].errors?.['max']) { <span class="field-error">Máximo
+                        100%</span> }
+                </div>
+                <div class="form-info">
+                    <span>💡</span> Esta comisión se aplicará a todos los contratos nuevos. Los contratos existentes no
+                    se verán afectados.
+                </div>
+                <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' :
+                    'Actualizar comisión' }}</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3 style="margin-bottom:1rem">Historial de cambios</h3>
+            @if (historial.length === 0) { <div class="empty-state">
+                <div class="empty-icon">💹</div>
+                <h3>Sin historial</h3>
+            </div> }
+            @for (h of historial; track h.id) {
+            <div class="hist-row">
+                <div>
+                    <div class="h-pct">{{ h.porcentaje }}%</div>
+                    <div class="h-admin">Por: {{ h.adminNombre || 'Administrador' }}</div>
+                </div>
+                <div class="h-fecha">{{ h.fechaCreacion | date:'dd/MM/yyyy' }}</div>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</app-layout>

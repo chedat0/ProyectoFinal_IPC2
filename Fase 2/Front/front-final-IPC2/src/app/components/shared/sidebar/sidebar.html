@@ -1,1 +1,19 @@
-<p>sidebar works!</p>
+<nav class="sidebar">
+    <div class="sb-brand">
+        <img src="connect.png" alt="ConnectWork" class="sb-logo">
+        <span>ConnectWork</span>
+    </div>
+    @if (title) {
+    <div class="sb-section-label">{{ title }}</div>
+    }
+    <ul class="sb-nav">
+        @for (item of items; track item.path) {
+        <li>
+            <a [routerLink]="item.path" routerLinkActive="active" class="sb-link">
+                <span class="sb-icon">{{ item.icon }}</span>
+                <span>{{ item.label }}</span>
+            </a>
+        </li>
+        }
+    </ul>
+</nav>

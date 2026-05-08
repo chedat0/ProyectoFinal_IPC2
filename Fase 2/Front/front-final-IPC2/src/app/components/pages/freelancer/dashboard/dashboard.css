@@ -1,0 +1,33 @@
+.card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem
+}
+
+.list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .7rem 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+        border: none
+    }
+}
+
+.row-title {
+    font-size: .88rem;
+    font-weight: 500
+}
+
+.row-meta {
+    font-size: .78rem;
+    color: #999;
+    margin-top: .1rem
+}
+
+.saldo-card {
+    border-top: 3px solid var(--terracota)
+}

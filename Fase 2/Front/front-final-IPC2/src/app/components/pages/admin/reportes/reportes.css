@@ -1,0 +1,12 @@
+.rank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--crema);
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--pizarra)
+}

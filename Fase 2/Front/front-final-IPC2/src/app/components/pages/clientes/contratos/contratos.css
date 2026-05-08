@@ -1,0 +1,88 @@
+.contrato-card {
+    margin-bottom: 1rem
+}
+
+.ct-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+
+    h3 {
+        font-size: 1rem;
+        margin: 0
+    }
+}
+
+.ct-meta {
+    font-size: .8rem;
+    color: #888;
+    margin-top: .2rem
+}
+
+.ct-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: .35rem
+}
+
+.ct-monto {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--pizarra)
+}
+
+.ct-actions {
+    display: flex;
+    gap: .5rem;
+    flex-wrap: wrap
+}
+
+.entregas-section {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+
+    h3 {
+        font-size: .9rem;
+        margin-bottom: .75rem
+    }
+}
+
+.entrega-row {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .6rem 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+        border: none
+    }
+}
+
+.ent-info {
+    flex: 1
+}
+
+.ent-desc {
+    font-size: .85rem;
+    color: var(--carbon)
+}
+
+.ent-fecha {
+    font-size: .75rem;
+    color: #aaa
+}
+
+.ent-actions {
+    display: flex;
+    gap: .35rem
+}
+
+.text-muted {
+    color: #aaa;
+    font-size: .85rem
+}

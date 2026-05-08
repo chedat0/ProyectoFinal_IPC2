@@ -1,0 +1,10 @@
+<div class="page-shell">
+    <app-sidebar [items]="navItems" />
+    <div class="main-content">
+        <app-header [userName]="userName" [role]="role" />
+        <div class="page-body">
+            <ng-content />
+        </div>
+        <app-footer />
+    </div>
+</div>

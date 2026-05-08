@@ -1,0 +1,41 @@
+.tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--terracota);
+    color: #fff;
+    font-size: .65rem;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 0 .5rem;
+    min-width: 18px;
+    height: 18px;
+    margin-left: .4rem
+}
+
+.sol-info {
+    background: var(--crema);
+    border-radius: var(--radius-sm);
+    padding: .85rem 1rem;
+    margin-bottom: 1.1rem
+}
+
+.sol-nombre {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--pizarra)
+}
+
+.sol-desc {
+    font-size: .82rem;
+    color: #888;
+    margin-top: .2rem
+}
+
+.text-truncate {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}

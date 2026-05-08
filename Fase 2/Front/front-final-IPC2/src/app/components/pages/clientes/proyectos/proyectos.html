@@ -1,1 +1,108 @@
-<p>proyectos works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <div class="page-header-row">
+            <div>
+                <h1>Mis Proyectos</h1>
+                <p>Gestiona los proyectos que has publicado</p>
+            </div>
+            <button class="btn btn-primary" (click)="abrirModal()">+ Publicar proyecto</button>
+        </div>
+    </div>
+    @if (success) { <div class="alert alert-success">{{ success }}</div> }
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    @if (proyectos.length === 0) {
+    <div class="empty-state card">
+        <div class="empty-icon">📁</div>
+        <h3>Aún no has publicado proyectos</h3>
+        <p>Crea tu primer proyecto y empieza a recibir propuestas</p><button class="btn btn-primary"
+            (click)="abrirModal()">Publicar proyecto</button>
+    </div>
+    }
+    @if (proyectos.length > 0) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>Proyecto</th>
+                    <th>Categoría</th>
+                    <th>Presupuesto</th>
+                    <th>Propuestas</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (p of proyectos; track p.id) {
+                <tr>
+                    <td><strong>{{ p.titulo }}</strong></td>
+                    <td>{{ p.categoriaNombre }}</td>
+                    <td>Q{{ p.presupuestoMaximo | number:'1.2-2' }}</td>
+                    <td>{{ p.totalPropuestas || 0 }}</td>
+                    <td><span class="badge"
+                            [ngClass]="{'badge-success':p.estado==='ABIERTO','badge-neutral':p.estado!='ABIERTO'}">{{
+                            p.estado }}</span></td>
+                    <td>
+                        <div class="actions">
+                            @if (p.estado === 'ABIERTO') {
+                            <a [routerLink]="['/cliente/proyectos', p.id, 'propuestas']"
+                                class="btn btn-outline btn-sm">Ver propuestas</a>
+                            <button class="btn btn-ghost btn-sm" (click)="abrirModal(p)">Editar</button>
+                            <button class="btn btn-danger btn-sm" (click)="eliminar(p.id)">Cancelar</button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    }
+    @if (showModal) {
+    <div class="modal-overlay" (click)="cerrar()">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>{{ editando ? 'Editar proyecto' : 'Publicar proyecto' }}</h2><button class="modal-close"
+                    (click)="cerrar()">✕</button>
+            </div>
+            <div class="modal-body">
+                @if (error) { <div class="alert alert-error">{{ error }}</div> }
+                <form [formGroup]="form">
+                    <div class="form-group"><label>Título *</label><input formControlName="titulo"
+                            placeholder="Ej: App móvil para delivery"></div>
+                    <div class="form-group"><label>Descripción *</label><textarea formControlName="descripcion" rows="3"
+                            placeholder="Describe el proyecto detalladamente..."></textarea></div>
+                    <div class="grid-2">
+                        <div class="form-group"><label>Categoría *</label>
+                            <select formControlName="categoriaId">
+                                <option value="">Seleccionar...</option>
+                                @for (c of categorias; track c.id) { <option [value]="c.id">{{ c.nombre }}</option> }
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Presupuesto máximo (Q) *</label><input
+                                formControlName="presupuestoMaximo" type="number" placeholder="5000"></div>
+                    </div>
+                    <div class="form-group"><label>Fecha límite</label><input formControlName="fechaLimite" type="date">
+                    </div>
+                    <div class="form-group"><label>Habilidades requeridas</label>
+                        <div class="chips-wrap">
+                            @for (h of habilidades; track h.id) {
+                            <span class="chip" [class.selected]="isHab(h.id)" (click)="toggleHab(h.id)">{{ h.nombre
+                                }}</span>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="cerrar()">Cancelar</button>
+                <button class="btn btn-primary" (click)="guardar()" [disabled]="saving">{{ saving ? 'Guardando...' :
+                    'Guardar' }}</button>
+            </div>
+        </div>
+    </div>
+    }
+</app-layout>

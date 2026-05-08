@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { backEnd } from '../app.config';
 
 @Injectable({ providedIn: 'root' })
-export class FreelancerService {
+export class FreelancerServicio {
     private url = `${backEnd.apiUrl}/freelancer`;
     constructor(private http: HttpClient) { }
 

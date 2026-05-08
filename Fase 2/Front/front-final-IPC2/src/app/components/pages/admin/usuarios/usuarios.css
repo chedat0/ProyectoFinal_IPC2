@@ -1,0 +1,19 @@
+.filter-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    align-items: center
+}
+
+.filtro-input {
+    flex: 1;
+    padding: .65rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: .9rem;
+
+    &:focus {
+        outline: none;
+        border-color: var(--terracota)
+    }
+}

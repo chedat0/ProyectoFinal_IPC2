@@ -1,1 +1,32 @@
-<p>perfil works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Mi Perfil</h1>
+        <p>Actualiza la información de tu cuenta de cliente</p>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    <div class="form-wrap card">
+        @if (error) { <div class="alert alert-error">{{ error }}</div> }
+        @if (success) { <div class="alert alert-success">{{ success }}</div> }
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="grid-2">
+                <div class="form-group"><label>Nombre de empresa</label><input formControlName="nombreEmpresa"
+                        placeholder="Mi Empresa S.A."></div>
+                <div class="form-group"><label>Sector</label><input formControlName="sector" placeholder="Tecnología">
+                </div>
+            </div>
+            <div class="form-group"><label>Descripción</label><textarea formControlName="descripcion" rows="4"
+                    placeholder="Cuéntanos sobre tu empresa..."></textarea></div>
+            <div class="grid-2">
+                <div class="form-group"><label>Sitio web</label><input formControlName="sitioWeb"
+                        placeholder="https://miempresa.com"></div>
+                <div class="form-group"><label>País</label><input formControlName="pais" placeholder="Guatemala"></div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar
+                cambios' }}</button>
+        </form>
+    </div>
+    }
+</app-layout>

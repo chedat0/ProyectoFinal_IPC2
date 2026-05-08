@@ -1,1 +1,83 @@
-<p>registro-cliente works!</p>
+<div class="auth-page">
+    <div class="reg-card">
+        <div class="reg-header">
+            <div class="auth-brand">
+                <img src="connect.png" alt="ConnectWork" class="auth-logo">
+                <span>ConnectWork</span>
+            </div>
+            <div class="reg-role-badge">🏢 Cuenta Cliente</div>
+            <h1>Crea tu cuenta</h1>
+            <p class="auth-sub">Publica proyectos y encuentra el talento que necesitas</p>
+        </div>
+        @if (error) { <div class="alert alert-error">{{ error }}</div> }
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Nombre completo *</label>
+                    <input formControlName="nombreCompleto" placeholder="Juan García"
+                        [class.error]="f['nombreCompleto'].touched && f['nombreCompleto'].invalid">
+                    @if (f['nombreCompleto'].touched && f['nombreCompleto'].errors?.['required']) { <span
+                        class="field-error">Requerido</span> }
+                </div>
+                <div class="form-group">
+                    <label>Usuario *</label>
+                    <input formControlName="username" placeholder="juangarcia"
+                        [class.error]="f['username'].touched && f['username'].invalid">
+                    @if (f['username'].touched && f['username'].errors?.['required']) { <span
+                        class="field-error">Requerido</span> }
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Correo electrónico *</label>
+                <input formControlName="correo" type="email" placeholder="juan@empresa.com"
+                    [class.error]="f['correo'].touched && f['correo'].invalid">
+                @if (f['correo'].touched && f['correo'].errors?.['required']) { <span
+                    class="field-error">Requerido</span> }
+                @if (f['correo'].touched && f['correo'].errors?.['email']) { <span class="field-error">Correo
+                    inválido</span> }
+            </div>
+            <div class="form-group">
+                <label>Contraseña *</label>
+                <div class="input-wrap">
+                    <input [type]="showPass ? 'text' : 'password'" formControlName="password"
+                        placeholder="Mínimo 8 caracteres"
+                        [class.error]="f['password'].touched && f['password'].invalid">
+                    <button type="button" class="pass-toggle" (click)="showPass=!showPass">{{ showPass ? '🙈' : '👁️'
+                        }}</button>
+                </div>
+                @if (f['password'].touched && f['password'].errors?.['minlength']) { <span class="field-error">Mínimo 8
+                    caracteres</span> }
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>CUI *</label>
+                    <input formControlName="cui" placeholder="0000000000000"
+                        [class.error]="f['cui'].touched && f['cui'].invalid">
+                    @if (f['cui'].touched && f['cui'].errors?.['required']) { <span class="field-error">Requerido</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label>Fecha de nacimiento *</label>
+                    <input formControlName="fechaNacimiento" type="date"
+                        [class.error]="f['fechaNacimiento'].touched && f['fechaNacimiento'].invalid">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input formControlName="telefono" placeholder="5555-1234">
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input formControlName="direccion" placeholder="Zona 10, Guatemala">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+                @if (loading) { <span class="btn-spinner"></span> } Crear cuenta de cliente
+            </button>
+        </form>
+        <p class="auth-footer">¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a> · <a
+                routerLink="/auth/registro">Cambiar tipo</a></p>
+    </div>
+    <app-footer />
+</div>

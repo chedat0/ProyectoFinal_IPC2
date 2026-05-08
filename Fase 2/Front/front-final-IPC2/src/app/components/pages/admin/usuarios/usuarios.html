@@ -1,1 +1,49 @@
-<p>usuarios works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Gestión de Usuarios</h1>
+        <p>Administra los usuarios registrados en la plataforma</p>
+    </div>
+    @if (error) { <div class="alert alert-error">{{ error }}</div> }
+    @if (success) { <div class="alert alert-success">{{ success }}</div> }
+    <div class="filter-row card">
+        <input [(ngModel)]="filtro" placeholder="Buscar por nombre o correo..." class="filtro-input">
+        <select [(ngModel)]="rolFiltro">
+            <option value="">Todos los roles</option>
+            <option value="CLIENTE">Cliente</option>
+            <option value="FREELANCER">Freelancer</option>
+        </select>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (u of filtrados; track u.id) {
+                <tr>
+                    <td><strong>{{ u.nombreCompleto }}</strong></td>
+                    <td>{{ u.correo }}</td>
+                    <td><span class="badge"
+                            [ngClass]="{'badge-terra':u.tipoUsuario==='FREELANCER','badge-neutral':u.tipoUsuario==='CLIENTE'}">{{
+                            u.tipoUsuario }}</span></td>
+                    <td><span class="badge" [ngClass]="u.activo ? 'badge-success' : 'badge-error'">{{ u.activo ?
+                            'Activo' : 'Inactivo' }}</span></td>
+                    <td><button class="btn btn-sm" [ngClass]="u.activo ? 'btn-danger' : 'btn-success'"
+                            (click)="toggle(u)">{{ u.activo ? 'Desactivar' : 'Activar' }}</button></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+</app-layout>

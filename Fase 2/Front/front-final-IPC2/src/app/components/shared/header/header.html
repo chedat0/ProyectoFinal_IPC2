@@ -1,1 +1,21 @@
-<p>header works!</p>
+<header class="top-bar">
+    <div class="tb-brand">
+        <img src="connect.png" alt="ConnectWork" class="tb-logo">
+        <span class="tb-name">ConnectWork</span>
+    </div>
+    <div class="tb-right">
+        <div class="tb-user" (click)="toggle()">
+            <div class="tb-avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+            <div class="tb-info">
+                <span class="tb-username">{{ userName }}</span>
+                <span class="tb-role">{{ roleLabel }}</span>
+            </div>
+            <span class="tb-caret">▾</span>
+        </div>
+        @if (menuOpen) {
+        <div class="tb-dropdown">
+            <button class="tb-drop-item danger" (click)="logout()">⬤ Cerrar sesión</button>
+        </div>
+        }
+    </div>
+</header>

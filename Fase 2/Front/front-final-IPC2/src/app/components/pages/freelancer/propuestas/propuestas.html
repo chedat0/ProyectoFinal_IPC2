@@ -1,1 +1,50 @@
-<p>propuestas works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Mis Propuestas</h1>
+        <p>Seguimiento de las propuestas que has enviado</p>
+    </div>
+    @if (error) { <div class="alert alert-error">{{ error }}</div> }
+    @if (success) { <div class="alert alert-success">{{ success }}</div> }
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    @if (propuestas.length === 0) { <div class="empty-state card">
+        <div class="empty-icon">📋</div>
+        <h3>Sin propuestas enviadas</h3>
+        <p>Explora proyectos y envía tu primera propuesta</p><a routerLink="/freelancer/explorar"
+            class="btn btn-primary">Explorar proyectos</a>
+    </div> }
+    @if (propuestas.length > 0) {
+    <div class="card">
+        <table class="cw-table">
+            <thead>
+                <tr>
+                    <th>Proyecto</th>
+                    <th>Monto ofertado</th>
+                    <th>Plazo</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (p of propuestas; track p.id) {
+                <tr>
+                    <td><strong>{{ p.proyectoTitulo }}</strong></td>
+                    <td>Q{{ p.montoOfertado | number:'1.2-2' }}</td>
+                    <td>{{ p.plazoDias }} días</td>
+                    <td>{{ p.fechaEnvio | date:'dd/MM/yyyy' }}</td>
+                    <td><span class="badge"
+                            [ngClass]="{'badge-warning':p.estado==='PENDIENTE','badge-success':p.estado==='ACEPTADA','badge-error':p.estado==='RECHAZADA','badge-neutral':p.estado==='RETIRADA'}">{{
+                            p.estado }}</span></td>
+                    <td>@if (p.estado==='PENDIENTE'){<button class="btn btn-danger btn-sm"
+                            (click)="retirar(p.id)">Retirar</button>}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    }
+    }
+</app-layout>

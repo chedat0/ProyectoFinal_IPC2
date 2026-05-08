@@ -1,1 +1,50 @@
-<p>perfil works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <h1>Mi Perfil Profesional</h1>
+        <p>Completa tu perfil para atraer más clientes</p>
+    </div>
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    <div class="card" style="max-width:800px">
+        @if (error) { <div class="alert alert-error">{{ error }}</div> }
+        @if (success) { <div class="alert alert-success">{{ success }}</div> }
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="grid-2">
+                <div class="form-group"><label>Especialidad *</label><input formControlName="especialidad"
+                        placeholder="Ej: Desarrollador Full-Stack"
+                        [class.error]="f['especialidad'].touched && f['especialidad'].invalid"></div>
+                <div class="form-group"><label>Tarifa por hora (Q) *</label><input formControlName="tarifaHora"
+                        type="number" placeholder="150"
+                        [class.error]="f['tarifaHora'].touched && f['tarifaHora'].invalid"></div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group"><label>Nivel de experiencia</label>
+                    <select formControlName="nivelExperiencia">
+                        <option value="">Seleccionar...</option>
+                        <option value="JUNIOR">Junior</option>
+                        <option value="SEMI_SENIOR">Semi Senior</option>
+                        <option value="SENIOR">Senior</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>País de residencia</label><input formControlName="paisResidencia"
+                        placeholder="Guatemala"></div>
+            </div>
+            <div class="form-group"><label>Descripción profesional</label><textarea formControlName="descripcion"
+                    rows="4" placeholder="Cuéntales a los clientes sobre tu experiencia..."></textarea></div>
+            <div class="form-group"><label>URL de portafolio</label><input formControlName="portafolioUrl"
+                    placeholder="https://mi-portafolio.com"></div>
+            <div class="form-group"><label>Habilidades</label>
+                <div class="chips-wrap">
+                    @for (h of habilidades; track h.id) {
+                    <span class="chip" [class.selected]="isSel(h.id)" (click)="toggle(h.id)">{{ h.nombre }}</span>
+                    }
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar
+                perfil' }}</button>
+        </form>
+    </div>
+    }
+</app-layout>

@@ -1,1 +1,49 @@
-<p>propuestas works!</p>
+<app-layout [navItems]="nav">
+    <div class="page-header">
+        <div class="page-header-row">
+            <div>
+                <h1>Propuestas recibidas</h1>
+                <p>Revisa y acepta la mejor propuesta para tu proyecto</p>
+            </div><a routerLink="/cliente/proyectos" class="btn btn-ghost">← Volver</a>
+        </div>
+    </div>
+    @if (error) { <div class="alert alert-error">{{ error }}</div> }
+    @if (success) { <div class="alert alert-success">{{ success }}</div> }
+    @if (loading) { <div class="spinner-wrap">
+        <div class="spinner"></div>
+    </div> }
+    @if (!loading) {
+    @if (propuestas.length === 0) { <div class="empty-state card">
+        <div class="empty-icon">📋</div>
+        <h3>Sin propuestas aún</h3>
+        <p>Los freelancers podrán enviar propuestas cuando vean tu proyecto</p>
+    </div> }
+    <div class="props-grid">
+        @for (p of propuestas; track p.id) {
+        <div class="prop-card card" [class.aceptada]="p.estado==='ACEPTADA'">
+            <div class="prop-head">
+                <div class="prop-avatar">{{ p.freelancerNombre?.charAt(0) }}</div>
+                <div>
+                    <div class="prop-nombre">{{ p.freelancerNombre }}</div>
+                    <div class="prop-cal">⭐ {{ p.freelancerCalificacion || 'Nuevo' }}</div>
+                </div>
+                <span class="badge ml-auto"
+                    [ngClass]="{'badge-warning':p.estado==='PENDIENTE','badge-success':p.estado==='ACEPTADA','badge-error':p.estado==='RECHAZADA'}">{{
+                    p.estado }}</span>
+            </div>
+            <div class="prop-body">
+                <div class="prop-row"><span>Oferta</span><strong>Q{{ p.montoOfertado | number:'1.2-2' }}</strong></div>
+                <div class="prop-row"><span>Entrega</span><strong>{{ p.plazoDias }} días</strong></div>
+            </div>
+            <p class="prop-carta">{{ p.cartaPresentacion }}</p>
+            @if (p.estado === 'PENDIENTE') {
+            <div class="prop-actions">
+                <button class="btn btn-success btn-sm" (click)="aceptar(p.id)">✓ Aceptar</button>
+                <button class="btn btn-danger btn-sm" (click)="rechazar(p.id)">✕ Rechazar</button>
+            </div>
+            }
+        </div>
+        }
+    </div>
+    }
+</app-layout>

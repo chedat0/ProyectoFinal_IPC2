@@ -1,1 +1,88 @@
-<p>registro-freelancer works!</p>
+<div class="auth-page">
+    <div class="reg-card">
+        <div class="reg-header">
+            <div class="auth-brand">
+                <img src="connect.png" alt="ConnectWork" class="auth-logo">
+                <span>ConnectWork</span>
+            </div>
+            <div class="reg-role-badge">💼 Cuenta Freelancer</div>
+            <h1>Crea tu cuenta</h1>
+            <p class="auth-sub">Muestra tu talento y trabaja con clientes de toda Guatemala</p>
+        </div>
+        @if (error) { <div class="alert alert-error">{{ error }}</div> }
+        <form [formGroup]="form" (ngSubmit)="submit()">
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Nombre completo *</label>
+                    <input formControlName="nombreCompleto" placeholder="María López"
+                        [class.error]="f['nombreCompleto'].touched && f['nombreCompleto'].invalid">
+                    @if (f['nombreCompleto'].touched && f['nombreCompleto'].errors?.['required']) { <span
+                        class="field-error">Requerido</span> }
+                </div>
+                <div class="form-group">
+                    <label>Usuario *</label>
+                    <input formControlName="username" placeholder="marialopez"
+                        [class.error]="f['username'].touched && f['username'].invalid">
+                    @if (f['username'].touched && f['username'].errors?.['required']) { <span
+                        class="field-error">Requerido</span> }
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Correo electrónico *</label>
+                <input formControlName="correo" type="email" placeholder="maria@correo.com"
+                    [class.error]="f['correo'].touched && f['correo'].invalid">
+                @if (f['correo'].touched && f['correo'].errors?.['email']) { <span class="field-error">Correo
+                    inválido</span> }
+            </div>
+            <div class="form-group">
+                <label>Contraseña *</label>
+                <div class="input-wrap">
+                    <input [type]="showPass ? 'text' : 'password'" formControlName="password"
+                        placeholder="Mínimo 8 caracteres"
+                        [class.error]="f['password'].touched && f['password'].invalid">
+                    <button type="button" class="pass-toggle" (click)="showPass=!showPass">{{ showPass ? '🙈' : '👁️'
+                        }}</button>
+                </div>
+                @if (f['password'].touched && f['password'].errors?.['minlength']) { <span class="field-error">Mínimo 8
+                    caracteres</span> }
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>CUI *</label>
+                    <input formControlName="cui" placeholder="0000000000000"
+                        [class.error]="f['cui'].touched && f['cui'].invalid">
+                </div>
+                <div class="form-group">
+                    <label>Fecha de nacimiento *</label>
+                    <input formControlName="fechaNacimiento" type="date">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input formControlName="telefono" placeholder="5555-9876">
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input formControlName="direccion" placeholder="Zona 4, Guatemala">
+                </div>
+            </div>
+            @if (habilidades.length > 0) {
+            <div class="form-group">
+                <label>Habilidades iniciales <span class="optional">(opcional)</span></label>
+                <div class="chips-wrap">
+                    @for (h of habilidades; track h.id) {
+                    <span class="chip" [class.selected]="isSelected(h.id)" (click)="toggle(h.id)">{{ h.nombre }}</span>
+                    }
+                </div>
+            </div>
+            }
+            <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="loading">
+                @if (loading) { <span class="btn-spinner"></span> } Crear cuenta de freelancer
+            </button>
+        </form>
+        <p class="auth-footer">¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a> · <a
+                routerLink="/auth/registro">Cambiar tipo</a></p>
+    </div>
+    <app-footer />
+</div>

@@ -1,0 +1,30 @@
+.comision-card {
+    border-top: 3px solid var(--terracota)
+}
+
+.accesos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: .75rem
+}
+
+.acceso-btn {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .85rem 1rem;
+    background: var(--crema);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: .875rem;
+    font-weight: 500;
+    color: var(--carbon);
+    text-decoration: none;
+    transition: all .18s;
+
+    &:hover {
+        background: var(--pizarra);
+        color: #fff;
+        text-decoration: none
+    }
+}

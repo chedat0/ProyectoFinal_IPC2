@@ -1,0 +1,98 @@
+.comision-actual {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--crema);
+    border-radius: var(--radius-md);
+    margin-bottom: 1.25rem
+}
+
+.ca-label {
+    font-size: .8rem;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em
+}
+
+.ca-valor {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--pizarra);
+    line-height: 1.1
+}
+
+.ca-fecha {
+    font-size: .78rem;
+    color: #aaa;
+    margin-top: .35rem
+}
+
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 1.25rem
+}
+
+.pct-input-wrap {
+    position: relative;
+
+    input {
+        width: 100%;
+        padding-right: 2.5rem
+    }
+
+    .pct-symbol {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        font-weight: 600
+    }
+}
+
+.form-info {
+    background: rgba(186, 102, 72, .08);
+    border: 1px solid rgba(186, 102, 72, .2);
+    border-radius: var(--radius-sm);
+    padding: .75rem;
+    font-size: .82rem;
+    color: #666;
+    display: flex;
+    gap: .5rem;
+    margin-bottom: 1.25rem;
+
+    span {
+        flex-shrink: 0
+    }
+}
+
+.hist-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .7rem 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+        border: none
+    }
+}
+
+.h-pct {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--pizarra)
+}
+
+.h-admin {
+    font-size: .75rem;
+    color: #aaa
+}
+
+.h-fecha {
+    font-size: .8rem;
+    color: #888
+}
