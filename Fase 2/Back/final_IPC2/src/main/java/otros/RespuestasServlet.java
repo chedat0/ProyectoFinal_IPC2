@@ -18,12 +18,18 @@ import java.util.Map;
 public class RespuestasServlet{
     public static void ok(HttpServletResponse res, Object data) throws IOException {
         res.setStatus(HttpServletResponse.SC_OK);
-        writeJson(res, data);
+        Map<String, Object> body = new HashMap<>();
+        body.put("success", true);
+        body.put("data", data);
+        writeJson(res, body);
     }
 
     public static void created(HttpServletResponse res, Object data) throws IOException {
         res.setStatus(HttpServletResponse.SC_CREATED);
-        writeJson(res, data);
+        Map<String, Object> body = new HashMap<>();
+        body.put("success", true);
+        body.put("data", data);
+        writeJson(res, body);
     }
 
     public static void error(HttpServletResponse res, int status, String message) throws IOException {

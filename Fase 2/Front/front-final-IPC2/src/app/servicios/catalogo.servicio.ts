@@ -8,10 +8,10 @@ export class CatalogoServicio {
     private url = backEnd.apiUrl;
     constructor(private http: HttpClient) { }
 
-    getCategorias(): Observable<any> { return this.http.get(`${this.url}/admin/categorias`); }
+    getCategorias(): Observable<any> { return this.http.get(`${this.url}/catalogo/categorias`); }
     getHabilidades(categoriaId?: number): Observable<any> {
         let params = new HttpParams();
         if (categoriaId) params = params.set('categoriaId', categoriaId);
-        return this.http.get(`${this.url}/admin/habilidades`, { params });
+        return this.http.get(`${this.url}/catalogo/habilidades`, { params });
     }
 }

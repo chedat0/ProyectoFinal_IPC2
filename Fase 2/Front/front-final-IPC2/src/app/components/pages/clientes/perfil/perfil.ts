@@ -21,46 +21,80 @@ const NAV = [
   styleUrl: './perfil.css',
 })
 export class Perfil implements OnInit {
-  nav = NAV; 
-  form!: FormGroup; 
-  loading = true; 
-  saving = false; 
-  success = ''; 
+  nav = NAV;
+  form!: FormGroup;
+  loading = true;
+  saving = false;
+  editando = false;
+  perfilData: any = null;
+  success = '';
   error = '';
 
   constructor(private service: ClienteServicio, private fb: FormBuilder) { }
-  
+
   ngOnInit() {
-    this.form = this.fb.group({ 
-      nombreEmpresa: [''], 
-      descripcion: [''], 
-      sector: [''], 
-      sitioWeb: [''], 
+    this.form = this.fb.group({
+      nombreEmpresa: [''],
+      descripcion: [''],
+      sector: [''],
+      sitioWeb: [''],
       pais: ['Guatemala'] });
-    this.service.getPerfil().subscribe({ next: (r: any) => { if (r?.data) this.form.patchValue({ 
-      nombreEmpresa: r.data.nombreEmpresa || '', 
-      descripcion: r.data.descripcion || '', 
-      sector: r.data.sector || '', 
-      sitioWeb: r.data.sitioWeb || '', 
-      pais: r.data.pais || 'Guatemala' }); 
-      this.loading = false; 
-    }, error: () => this.loading = false });
+    this.service.getPerfil().subscribe({ next: (r: any) => {
+      if (r?.data) {
+        this.perfilData = r.data;
+        this.form.patchValue({
+          nombreEmpresa: r.data.nombreEmpresa || '',
+          descripcion: r.data.descripcion || '',
+          sector: r.data.sector || '',
+          sitioWeb: r.data.sitioWeb || '',
+          pais: r.data.pais || 'Guatemala' });
+        this.editando = !r.data.nombreEmpresa && !r.data.descripcion;
+      } else {
+        this.editando = true;
+      }
+      this.loading = false;
+    }, error: () => { this.editando = true; this.loading = false; } });
   }
 
-  get f() { 
-    return this.form.controls; 
+  get f() {
+    return this.form.controls;
+  }
+
+  iniciarEdicion() {
+    this.editando = true;
+    this.error = '';
+    this.success = '';
+  }
+
+  cancelarEdicion() {
+    if (this.perfilData) {
+      this.form.patchValue({
+        nombreEmpresa: this.perfilData.nombreEmpresa || '',
+        descripcion: this.perfilData.descripcion || '',
+        sector: this.perfilData.sector || '',
+        sitioWeb: this.perfilData.sitioWeb || '',
+        pais: this.perfilData.pais || 'Guatemala'
+      });
+    }
+    this.editando = false;
+    this.error = '';
   }
 
   save() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.saving = true; this.error = ''; this.success = '';
-    this.service.updatePerfil(this.form.value).subscribe({ next: (r: any) => { 
-      if (r?.success) this.success = 'Perfil actualizado correctamente.'; 
-      else this.error = r?.message || 'Error'; 
-      this.saving = false; 
-    }, error: (e: any) => { 
-      this.error = e?.message || 'Error'; 
-      this.saving = false; 
+    this.service.updatePerfil(this.form.value).subscribe({ next: (r: any) => {
+      if (r?.success) {
+        this.success = 'Perfil actualizado correctamente.';
+        this.perfilData = { ...this.perfilData, ...this.form.value };
+        this.editando = false;
+      } else {
+        this.error = r?.message || 'Error';
+      }
+      this.saving = false;
+    }, error: (e: any) => {
+      this.error = e?.message || 'Error';
+      this.saving = false;
     } });
   }
 }
