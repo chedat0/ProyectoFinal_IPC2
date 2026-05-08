@@ -40,7 +40,7 @@ export class Reportes implements OnInit {
   cargar() {
     this.loading = true;
     const { fechaInicio, fechaFin } = this.form.value;
-    const obs = this.tab === 'proyectos' ? this.service.reporteProyectos(fechaInicio, fechaFin) : this.tab === 'recargas' ? this.service.reporteRecargas() : this.service.reporteGastos(fechaInicio, fechaFin);
+    const obs = this.tab === 'proyectos' ? this.service.reporteProyectos(fechaInicio, fechaFin) : this.tab === 'recargas' ? this.service.reporteRecargas(fechaInicio, fechaFin) : this.service.reporteGastos(fechaInicio, fechaFin);
     obs.subscribe({ next: (r: any) => { 
       this.datos = r?.data || []; 
       this.loading = false; 

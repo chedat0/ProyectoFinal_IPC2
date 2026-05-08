@@ -82,10 +82,10 @@ export class Habilidades implements OnInit{
     
     this.saving=true;
     this.error='';
-    const obs=this.editando?this.service.updateHabilidad(
+    const obs=this.editando?this.service.actualizarHabilidad(
       this.editando.id,
       this.form.value):
-      this.service.createHabilidad(this.form.value);
+      this.service.crearHabilidad(this.form.value);
 
     obs.subscribe({next:(r:any)=>{if(r?.success){
       this.success='Guardado.';
@@ -101,7 +101,7 @@ export class Habilidades implements OnInit{
   }
 
   toggle(h:any){
-    this.service.toggleHabilidad(h.id,!h.activa).subscribe({next:(r:any)=>{if(r?.success)h.activa=!h.activa;}});
+    this.service.toggleHabilidad(h.id).subscribe({next:(r:any)=>{if(r?.success)h.activa=!h.activa;}});
   }
 
   get f(){

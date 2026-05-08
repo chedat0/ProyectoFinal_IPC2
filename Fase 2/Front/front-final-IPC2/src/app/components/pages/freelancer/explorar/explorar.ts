@@ -62,9 +62,8 @@ export class Explorar implements OnInit {
 
   buscar() {
     this.loading = true;
-    const { categoriaId, habilidadId, presupuestoMin, presupuestoMax } = this.filterForm.value;
-    this.service.getProyectos(categoriaId || undefined, habilidadId || undefined, presupuestoMin || undefined, presupuestoMax || undefined)
-      .subscribe({ next: (r: any) => { 
+    const filtros = this.filterForm.value;
+    this.service.getProyectos(filtros).subscribe({ next: (r: any) => { 
         this.proyectos = r?.data || []; 
         this.loading = false; 
       }, error: () => this.loading = false });

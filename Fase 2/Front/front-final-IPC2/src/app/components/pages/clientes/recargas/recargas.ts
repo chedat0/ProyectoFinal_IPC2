@@ -38,7 +38,7 @@ export class Recargas implements OnInit {
       metodoPago: ['TRANSFERENCIA', Validators.required], 
       referencia: [''] 
     });
-    this.service.getHistorialRecargas().subscribe({ next: (r: any) => { 
+    this.service.getRecargas().subscribe({ next: (r: any) => { 
       this.historial = r?.data || []; 
       this.loading = false; 
     }, error: () => this.loading = false });
@@ -53,7 +53,10 @@ export class Recargas implements OnInit {
     this.saving = true; 
     this.error = ''; 
     this.success = '';
-    this.service.recargarSaldo(this.form.value).subscribe({ next: (r: any) => { 
+
+    const { monto, metodoPago, referencia } = this.form.value;
+    
+    this.service.recargarSaldo(monto, metodoPago, referencia).subscribe({ next: (r: any) => { 
       if (r?.success) { 
         this.success = 'Saldo recargado exitosamente.'; 
         this.form.reset({ metodoPago: 'TRANSFERENCIA' }); 

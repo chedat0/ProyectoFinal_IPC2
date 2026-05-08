@@ -60,9 +60,8 @@ export class Contratos implements OnInit{
       return; 
     }
     this.sending = true; 
-    this.error = '';
-    this.service.enviarEntrega({ 
-      contratoId: this.contratoActivo, ...this.entForm.value })
+    this.error = '';    
+    this.service.crearEntrega(this.contratoActivo, this.entForm.value)
       .subscribe({ next: (r: any) => { if (r?.success) { 
         this.success = 'Entrega enviada. El cliente la revisará pronto.'; 
         this.showModal = false; 

@@ -74,7 +74,7 @@ export class Contratos implements OnInit{
   cancelar(id: number) {
     const motivo = prompt('Motivo de cancelación:');
     if (!motivo) return;
-    this.service.cancelarContrato(id, motivo).subscribe({ next: (r: any) => { 
+    this.service.cancelarContrato(id).subscribe({ next: (r: any) => { 
       if (r?.success) this.ngOnInit(); 
       else this.error = r?.message || 'Error'; 
     }, error: (e: any) => this.error = e?.message || 'Error' });
@@ -88,9 +88,8 @@ export class Contratos implements OnInit{
 
   calificar() {
     if (this.calForm.invalid) return;
-    this.service.calificarFreelancer(
-      this.contratoCalId, 
-      this.calForm.value).subscribe({ next: () => { 
+    this.service.crearCalificacion(
+      this.contratoCalId).subscribe({ next: () => { 
         this.showCalModal = false; 
         this.success = '¡Calificación enviada!'; 
         this.ngOnInit(); 
