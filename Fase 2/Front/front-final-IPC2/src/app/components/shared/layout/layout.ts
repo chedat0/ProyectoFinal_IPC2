@@ -13,11 +13,15 @@ import { AuthServicio } from '../../../servicios/auth.servicio';
 })
 export class Layout implements OnInit{
   @Input() navItems: NavItem[] = [];
-  userName = ''; role = '';
+  userName = ''; 
+  role = '';
   constructor(private auth: AuthServicio) {}
+
   ngOnInit() {
     this.auth.currentUser$.subscribe((u: any) => {
-      if (u) { this.userName = u.nombreCompleto || u.username || ''; this.role = u.rol || u.tipoUsuario || ''; }
+      if (u) { 
+        this.userName = u.nombreCompleto || u.username || ''; 
+        this.role = u.rol || u.tipoUsuario || ''; }
     });
   }
 }

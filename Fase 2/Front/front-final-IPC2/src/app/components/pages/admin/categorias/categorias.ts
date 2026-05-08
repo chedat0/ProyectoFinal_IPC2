@@ -82,7 +82,7 @@ export class Categorias implements OnInit {
   }
 
   toggle(c: any) { 
-    this.service.toggleCategoria(c.id, !c.activa).subscribe({ next: (r: any) => { if (r?.success) c.activa = !c.activa; } }); 
+    this.service.toggleCategoria(c.id).subscribe({ next: (r: any) => { if (r?.success) c.activa = !c.activa; } }); 
   }
 
   get f() { 

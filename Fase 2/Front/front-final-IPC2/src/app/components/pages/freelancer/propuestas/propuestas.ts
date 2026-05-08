@@ -38,7 +38,7 @@ export class Propuestas implements OnInit {
   retirar(id: number) {
     if (!confirm('¿Retirar esta propuesta?')) 
       return;
-    this.service.retirarPropuesta(id).subscribe({ next: (r: any) => { 
+    this.service.eliminarPropuesta(id).subscribe({ next: (r: any) => { 
       if (r?.success) { 
         this.success = 'Propuesta retirada.'; 
         this.ngOnInit(); 

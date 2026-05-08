@@ -47,7 +47,7 @@ export class Usuarios implements OnInit{
       u.nombreCompleto}?`
     ))
     return;
-    this.service.toggleUsuario(u.id,!u.activo).subscribe({next:(r:any)=>{if(r?.success){
+    this.service.toggleUsuario(u.id).subscribe({next:(r:any)=>{if(r?.success){
       u.activo=!u.activo;
       this.success='Usuario actualizado.'
     } else 

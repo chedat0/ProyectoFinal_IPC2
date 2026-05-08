@@ -22,22 +22,22 @@ const NAV = [
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard implements OnInit{
-  nav = NAV; 
-  stats: any = {}; 
-  comision: any = null; 
+export class Dashboard implements OnInit {
+  nav = NAV;
+  stats: any = {};
+  comision: any = null;
   loading = true;
-  
+
   constructor(private service: AdminServicio) { }
 
   ngOnInit() {
     Promise.all([
-      this.service.getResumenGeneral().toPromise(), 
-      this.service.getComision().toPromise()])
-      .then(([r, c]: any[]) => { 
-        if (r?.success) this.stats = r.data || {}; 
-        if (c?.success) this.comision = c.data; 
-        this.loading = false; 
-      }).catch(() => this.loading = false );
+      this.service.getSaldoGlobal().toPromise(),
+      this.service.getComisionActual().toPromise()])
+      .then(([s, c]: any[]) => {
+        this.stats.saldoGlobal = s?.data || 0;
+        this.comision = c?.data;
+        this.loading = false;
+      }).catch(() => this.loading = false);
   }
 }

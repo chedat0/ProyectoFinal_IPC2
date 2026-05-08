@@ -13,18 +13,25 @@ import { Footer } from '../../../shared/footer/footer';
 })
 export class Login {
   form: FormGroup;
-  loading = false; error = ''; showPass = false;
+  loading = false; 
+  error = ''; 
+  showPass = false;
+
   constructor(private fb: FormBuilder, private auth: AuthServicio, private router: Router) {
     this.form = this.fb.group({ username: ['', Validators.required], password: ['', Validators.required] });
   }
-  get f() { return this.form.controls; }
+
+  get f() { 
+    return this.form.controls; 
+  }
+
   submit() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading = true; this.error = '';
     const { username, password } = this.form.value;
     this.auth.login(username, password).subscribe({
-      next: (res: any) => {
-        const rol = res?.data?.rol || res?.rol;
+      next: () => {
+        const rol = this.auth.rol;
         if (rol === 'CLIENTE') this.router.navigate(['/cliente/dashboard']);
         else if (rol === 'FREELANCER') this.router.navigate(['/freelancer/dashboard']);
         else if (rol === 'ADMINISTRADOR') this.router.navigate(['/admin/dashboard']);

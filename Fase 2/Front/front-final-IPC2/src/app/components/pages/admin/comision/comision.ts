@@ -37,7 +37,7 @@ export class Comision implements OnInit {
   ngOnInit(){
     this.form=this.fb.group({porcentaje:['',[ Validators.required,Validators.min(0), Validators.max(100)]]});
     Promise.all([
-      this.service.getComision().toPromise(),
+      this.service.getComisionActual().toPromise(),
       this.service.getHistorialComision().toPromise()])
       .then(([c,h]:any[])=>{if(c?.data) {
         this.comision=c.data;
@@ -53,7 +53,7 @@ export class Comision implements OnInit {
     this.saving=true;
     this.error='';
     this.success='';
-    this.service.updateComision(this.form.value).subscribe({next:(r:any)=>{if(r?.success){
+    this.service.setComision(this.form.value).subscribe({next:(r:any)=>{if(r?.success){
       this.success='Comisión actualizada correctamente.';
       this.ngOnInit(); 
     } else 

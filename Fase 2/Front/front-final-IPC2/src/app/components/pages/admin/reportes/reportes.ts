@@ -42,9 +42,9 @@ export class Reportes implements OnInit {
     this.loading=true; 
     this.datos=null;
     const {fechaInicio,fechaFin}=this.form.value;
-    const obs=this.tab==='ingresos'?this.service.getIngresosTotales(fechaInicio,fechaFin)
-      :this.tab==='freelancers'?this.service.getTopFreelancers(fechaInicio,fechaFin)
-      :this.service.getTopCategorias(fechaInicio,fechaFin);
+    const obs=this.tab==='ingresos'?this.service.reporteIngresos(fechaInicio,fechaFin)
+      :this.tab==='freelancers'?this.service.reporteTopFreelancers()
+      :this.service.reporteTopCategorias();
     obs.subscribe({next:(r:any)=>{
       this.datos=r?.data;
       this.loading=false;

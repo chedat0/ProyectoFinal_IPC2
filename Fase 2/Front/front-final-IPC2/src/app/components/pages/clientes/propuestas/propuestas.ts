@@ -19,6 +19,7 @@ const NAV = [
   templateUrl: './propuestas.html',
   styleUrl: './propuestas.css',
 })
+
 export class Propuestas implements OnInit{
   nav = NAV; 
   propuestas: any[] = []; 
