@@ -95,14 +95,18 @@ public class ClienteServlet extends HttpServlet {
                 int cid = Integer.parseInt(path.split("/")[2]);
                 RespuestasServlet.ok(res, entregaDAO.obtenerPorContrato(cid));
             } else if ("/reportes/proyectos".equals(path)) {
-                String fi = req.getParameter("fechaInicio"); String ff = req.getParameter("fechaFin");
-                if (fi == null || ff == null) { RespuestasServlet.badRequest(res, "Fechas requeridas"); return; }
+                String fi = req.getParameter("fechaInicio");
+                String ff = req.getParameter("fechaFin");
+                if (fi == null || fi.isEmpty()) fi = java.time.LocalDate.now().withDayOfYear(1).toString();
+                if (ff == null || ff.isEmpty()) ff = java.time.LocalDate.now().toString();
                 RespuestasServlet.ok(res, reporteDAO.historialProyectosCliente(cliente.getId(), fi, ff));
             } else if ("/reportes/recargas".equals(path)) {
                 RespuestasServlet.ok(res, recargaDAO.obtenerPorCliente(cliente.getId()));
             } else if ("/reportes/gastos-categoria".equals(path)) {
-                String fi = req.getParameter("fechaInicio"); String ff = req.getParameter("fechaFin");
-                if (fi == null || ff == null) { RespuestasServlet.badRequest(res, "Fechas requeridas"); return; }
+                String fi = req.getParameter("fechaInicio");
+                String ff = req.getParameter("fechaFin");
+                if (fi == null || fi.isEmpty()) fi = java.time.LocalDate.now().withDayOfYear(1).toString();
+                if (ff == null || ff.isEmpty()) ff = java.time.LocalDate.now().toString();
                 RespuestasServlet.ok(res, reporteDAO.gastosPorCategoria(cliente.getId(), fi, ff));
             } else {
                 RespuestasServlet.notFound(res, "Endpoint no encontrado");

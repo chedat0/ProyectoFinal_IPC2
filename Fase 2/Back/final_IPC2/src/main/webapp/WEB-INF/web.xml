@@ -26,6 +26,10 @@
         <servlet-name>AdminServlet</servlet-name>
         <servlet-class>controlador.AdminServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CatalogoServlet</servlet-name>
+        <servlet-class>controlador.CatalogoServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AuthServlet</servlet-name>
         <url-pattern>/api/auth/*</url-pattern>
@@ -41,6 +45,10 @@
     <servlet-mapping>
         <servlet-name>AdminServlet</servlet-name>
         <url-pattern>/api/admin/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CatalogoServlet</servlet-name>
+        <url-pattern>/api/catalogo/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
