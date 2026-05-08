@@ -1,15 +1,47 @@
 <app-layout [navItems]="nav">
     <div class="page-header">
         <h1>Mi Perfil Profesional</h1>
-        <p>Completa tu perfil para atraer más clientes</p>
+        <p>{{ editando ? 'Completa tu información para atraer más clientes' : 'Información de tu perfil' }}</p>
     </div>
-    @if (loading) { <div class="spinner-wrap">
+    @if (loading) {
+    <div class="spinner-wrap">
         <div class="spinner"></div>
-    </div> }
+    </div>
+    }
     @if (!loading) {
     <div class="card" style="max-width:800px">
         @if (error) { <div class="alert alert-error">{{ error }}</div> }
         @if (success) { <div class="alert alert-success">{{ success }}</div> }
+
+        @if (!editando && perfilData) {
+        <!-- Modo Vista -->
+        <div class="perfil-view">
+            <div class="grid-2">
+                <div class="info-item"><label>Especialidad</label><span>{{ perfilData.especialidad || '—' }}</span></div>
+                <div class="info-item"><label>Tarifa por hora (Q)</label><span>{{ perfilData.tarifaHora || '—' }}</span></div>
+            </div>
+            <div class="grid-2">
+                <div class="info-item"><label>Nivel de experiencia</label><span>{{ perfilData.nivelExperiencia || '—' }}</span></div>
+                <div class="info-item"><label>País de residencia</label><span>{{ perfilData.paisResidencia || '—' }}</span></div>
+            </div>
+            <div class="info-item"><label>Descripción profesional</label><span>{{ perfilData.descripcion || '—' }}</span></div>
+            <div class="info-item"><label>URL de portafolio</label>
+                @if (perfilData.portafolioUrl) {
+                <a [href]="perfilData.portafolioUrl" target="_blank">{{ perfilData.portafolioUrl }}</a>
+                } @else { <span>—</span> }
+            </div>
+            <div class="info-item"><label>Habilidades</label>
+                <div class="chips-wrap">
+                    @for (id of selHabs; track id) {
+                    <span class="chip selected">{{ habNombre(id) }}</span>
+                    }
+                    @if (selHabs.length === 0) { <span>Sin habilidades seleccionadas</span> }
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" (click)="iniciarEdicion()">Editar perfil</button>
+        </div>
+        } @else {
+        <!-- Modo Edición / Primer llenado -->
         <form [formGroup]="form" (ngSubmit)="save()">
             <div class="grid-2">
                 <div class="form-group"><label>Especialidad *</label><input formControlName="especialidad"
@@ -42,9 +74,14 @@
                     }
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar
-                perfil' }}</button>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar perfil' }}</button>
+                @if (perfilData) {
+                <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+                }
+            </div>
         </form>
+        }
     </div>
     }
 </app-layout>

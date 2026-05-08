@@ -258,6 +258,11 @@ public class FreelancerServlet extends HttpServlet {
                 if (json.has("portafolioUrl")) f.setPortafolioUrl(json.get("portafolioUrl").getAsString());
                 if (json.has("paisResidencia")) f.setPaisResidencia(json.get("paisResidencia").getAsString());
                 freelancerDAO.actualizarPerfil(f);
+                if (json.has("habilidadIds")) {
+                    List<Integer> habilidadIds = gson.fromJson(json.get("habilidadIds"),
+                        new com.google.gson.reflect.TypeToken<List<Integer>>(){}.getType());
+                    freelancerDAO.setHabilidades(f.getId(), habilidadIds);
+                }
                 RespuestasServlet.ok(resp, gson.toJsonTree(freelancerDAO.obtenerPorUsuarioId(usuarioId)));
 
             // PUT /api/freelancer/habilidades

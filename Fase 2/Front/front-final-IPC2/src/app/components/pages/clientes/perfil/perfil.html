@@ -1,15 +1,38 @@
 <app-layout [navItems]="nav">
     <div class="page-header">
         <h1>Mi Perfil</h1>
-        <p>Actualiza la información de tu cuenta de cliente</p>
+        <p>{{ editando ? 'Completa la información de tu cuenta' : 'Información de tu cuenta de cliente' }}</p>
     </div>
-    @if (loading) { <div class="spinner-wrap">
+    @if (loading) {
+    <div class="spinner-wrap">
         <div class="spinner"></div>
-    </div> }
+    </div>
+    }
     @if (!loading) {
     <div class="form-wrap card">
         @if (error) { <div class="alert alert-error">{{ error }}</div> }
         @if (success) { <div class="alert alert-success">{{ success }}</div> }
+
+        @if (!editando && perfilData) {
+        <!-- Modo Vista -->
+        <div class="perfil-view">
+            <div class="grid-2">
+                <div class="info-item"><label>Nombre de empresa</label><span>{{ perfilData.nombreEmpresa || '—' }}</span></div>
+                <div class="info-item"><label>Sector</label><span>{{ perfilData.sector || '—' }}</span></div>
+            </div>
+            <div class="info-item"><label>Descripción</label><span>{{ perfilData.descripcion || '—' }}</span></div>
+            <div class="grid-2">
+                <div class="info-item"><label>Sitio web</label>
+                    @if (perfilData.sitioWeb) {
+                    <a [href]="perfilData.sitioWeb" target="_blank">{{ perfilData.sitioWeb }}</a>
+                    } @else { <span>—</span> }
+                </div>
+                <div class="info-item"><label>País</label><span>{{ perfilData.pais || '—' }}</span></div>
+            </div>
+            <button type="button" class="btn btn-primary" (click)="iniciarEdicion()">Editar perfil</button>
+        </div>
+        } @else {
+        <!-- Modo Edición / Primer llenado -->
         <form [formGroup]="form" (ngSubmit)="save()">
             <div class="grid-2">
                 <div class="form-group"><label>Nombre de empresa</label><input formControlName="nombreEmpresa"
@@ -24,9 +47,14 @@
                         placeholder="https://miempresa.com"></div>
                 <div class="form-group"><label>País</label><input formControlName="pais" placeholder="Guatemala"></div>
             </div>
-            <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar
-                cambios' }}</button>
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar cambios' }}</button>
+                @if (perfilData) {
+                <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+                }
+            </div>
         </form>
+        }
     </div>
     }
 </app-layout>
