@@ -5,9 +5,10 @@ import { AuthServicio } from '../servicios/auth.servicio';
 @Injectable({ providedIn: 'root' })
 export class RoleGuard implements CanActivate {
     constructor(private auth: AuthServicio, private router: Router) { }
+    
     canActivate(route: ActivatedRouteSnapshot): boolean {
-        const roles: string[] = route.data['roles'] || [];
-        if (this.auth.isLoggedIn && roles.includes(this.auth.rol!)) return true;
+        const role: string = route.data['role'] || '';
+        if (this.auth.isLoggedIn && this.auth.rol === role) return true;
         this.router.navigate(['/auth/login']);
         return false;
     }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -12,7 +12,7 @@ import { Footer } from '../../../shared/footer/footer';
   templateUrl: './registro-freelancer.html',
   styleUrl: './registro-freelancer.css',
 })
-export class RegistroFreelancer {
+export class RegistroFreelancer implements OnInit{
   form: FormGroup;
   habilidades: any[] = [];
   seleccionadas: number[] = [];

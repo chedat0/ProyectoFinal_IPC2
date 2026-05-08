@@ -22,7 +22,15 @@ export class AuthServicio {
     login(username: string, password: string): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/login`, { username, password }).pipe(
             tap(res => {
-                if (res.success && res.data) this.setUser(res.data);
+                const data = res.data || res;
+                if (data?.token) {
+                    const user = {
+                        ...data,
+                        rol: data.tipoUsuario || data.rol
+                    };
+                    this.setUser(user);
+                }
+
             })
         );
     }
@@ -30,7 +38,14 @@ export class AuthServicio {
     register(payload: any): Observable<any> {
         return this.http.post<any>(`${this.apiUrl}/register`, payload).pipe(
             tap(res => {
-                if (res.success && res.data) this.setUser(res.data);
+                const data = res.data || res;
+                if (data?.token) {
+                    const user = {
+                        ...data,
+                        rol: data.tipoUsuario || data.rol
+                    };
+                    this.setUser(user);
+                }
             })
         );
     }

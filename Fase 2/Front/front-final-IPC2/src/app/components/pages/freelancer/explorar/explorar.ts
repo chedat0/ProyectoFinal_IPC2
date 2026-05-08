@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { Layout } from '../../../shared/layout/layout';
 import { FreelancerServicio } from '../../../../servicios/freelancer.servicio';
 import { CatalogoServicio } from '../../../../servicios/catalogo.servicio';
-import { TmplAstBoundAttribute } from '@angular/compiler';
 
 const NAV = [
   { label: 'Dashboard', icon: '📊', path: '/freelancer/dashboard' },

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -21,7 +21,7 @@ const NAV = [
   styleUrl: './reportes.css',
 })
 
-export class Reportes {
+export class Reportes implements OnInit {
   nav = NAV; 
   tab = 'contratos'; 
   datos: any[] = []; 

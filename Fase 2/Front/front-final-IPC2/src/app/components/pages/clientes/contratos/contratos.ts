@@ -6,12 +6,12 @@ import { Layout } from '../../../shared/layout/layout';
 import { ClienteServicio } from '../../../../servicios/cliente.servicio';
 
 const NAV = [
-  { label: 'Dashboard', icon: '📊', path: '/clientes/dashboard' },
-  { label: 'Mis proyectos', icon: '📁', path: '/clientes/proyectos' },
-  { label: 'Contratos', icon: '📄', path: '/clientes/contratos' },
-  { label: 'Recargar saldo', icon: '💳', path: '/clientes/recargas' },
-  { label: 'Reportes', icon: '📈', path: '/clientes/reportes' },
-  { label: 'Mi perfil', icon: '👤', path: '/clientes/perfil' },
+  { label: 'Dashboard', icon: '📊', path: '/cliente/dashboard' },
+  { label: 'Mis proyectos', icon: '📁', path: '/cliente/proyectos' },
+  { label: 'Contratos', icon: '📄', path: '/cliente/contratos' },
+  { label: 'Recargar saldo', icon: '💳', path: '/cliente/recargas' },
+  { label: 'Reportes', icon: '📈', path: '/cliente/reportes' },
+  { label: 'Mi perfil', icon: '👤', path: '/cliente/perfil' },
 ];
 
 @Component({
@@ -88,8 +88,9 @@ export class Contratos implements OnInit{
 
   calificar() {
     if (this.calForm.invalid) return;
-    this.service.crearCalificacion(
-      this.contratoCalId).subscribe({ next: () => { 
+    this.service.crearCalificacion({contratoId: this.contratoCalId,
+  ...this.calForm.value
+}).subscribe({ next: () => { 
         this.showCalModal = false; 
         this.success = '¡Calificación enviada!'; 
         this.ngOnInit(); 

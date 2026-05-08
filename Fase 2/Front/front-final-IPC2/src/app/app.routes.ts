@@ -56,7 +56,7 @@ export const routes: Routes = [
     // Freelancer
     {
         path: 'freelancer/dashboard', canActivate: [AuthGuard, RoleGuard], data: { role: 'FREELANCER' },
-        loadComponent: () => import('./components/pages/clientes/dashboard/dashboard').then(m => m.Dashboard)
+        loadComponent: () => import('./components/pages/freelancer/dashboard/dashboard').then(m => m.Dashboard)
     },
     {
         path: 'freelancer/perfil', canActivate: [AuthGuard, RoleGuard], data: { role: 'FREELANCER' },

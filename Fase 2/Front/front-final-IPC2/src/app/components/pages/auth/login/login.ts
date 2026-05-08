@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -13,16 +13,16 @@ import { Footer } from '../../../shared/footer/footer';
 })
 export class Login {
   form: FormGroup;
-  loading = false; 
-  error = ''; 
+  loading = false;
+  error = '';
   showPass = false;
 
-  constructor(private fb: FormBuilder, private auth: AuthServicio, private router: Router) {
+  constructor(private fb: FormBuilder, private auth: AuthServicio, private router: Router, private cdr: ChangeDetectorRef) {
     this.form = this.fb.group({ username: ['', Validators.required], password: ['', Validators.required] });
   }
 
-  get f() { 
-    return this.form.controls; 
+  get f() {
+    return this.form.controls;
   }
 
   submit() {
@@ -30,14 +30,19 @@ export class Login {
     this.loading = true; this.error = '';
     const { username, password } = this.form.value;
     this.auth.login(username, password).subscribe({
-      next: () => {
-        const rol = this.auth.rol;
+      next: (res: any) => {
+        this.loading = false;        
+        const rol = res?.tipoUsuario || res?.data?.tipoUsuario || res?.rol;
         if (rol === 'CLIENTE') this.router.navigate(['/cliente/dashboard']);
         else if (rol === 'FREELANCER') this.router.navigate(['/freelancer/dashboard']);
         else if (rol === 'ADMINISTRADOR') this.router.navigate(['/admin/dashboard']);
-        else this.router.navigate(['/auth/login']);
+        else this.error = 'Rol no reconocido: ' + JSON.stringify(rol);
       },
-      error: (e: any) => { this.error = e?.message || 'Credenciales incorrectas'; this.loading = false; }
+      error: (e: any) => {
+        this.error = e?.message || 'Credenciales incorrectas';
+        this.loading = false;
+      }
     });
   }
+
 }

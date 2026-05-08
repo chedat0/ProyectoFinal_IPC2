@@ -8,5 +8,5 @@ import { CommonModule } from '@angular/common';
   styleUrl: './footer.css',
 })
 export class Footer {
-  year = new Date().getFullYear;
+  year = new Date().getFullYear();
 }

@@ -53,7 +53,7 @@ export class Comision implements OnInit {
     this.saving=true;
     this.error='';
     this.success='';
-    this.service.setComision(this.form.value).subscribe({next:(r:any)=>{if(r?.success){
+    this.service.setComision(this.form.value.porcentaje).subscribe({next:(r:any)=>{if(r?.success){
       this.success='Comisión actualizada correctamente.';
       this.ngOnInit(); 
     } else 
