@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Layout } from '../../../shared/layout/layout';
@@ -26,7 +26,7 @@ export class Dashboard implements OnInit{
   propuestas: any[] = []; 
   loading = true;
 
-  constructor(private service: FreelancerServicio) { }
+  constructor(private service: FreelancerServicio, private cdr: ChangeDetectorRef) { }
   
   ngOnInit() {
     Promise.all([
@@ -43,7 +43,8 @@ export class Dashboard implements OnInit{
         this.propuestas = (pr?.data || []).slice(0, 4); 
         this.stats.propuestas = pr?.data?.length || 0;
         this.loading = false;
-      }).catch(() => this.loading = false);
+        this.cdr.detectChanges();
+      }).catch(() => {this.loading = false; this.cdr.detectChanges();});
   }
   
 }

@@ -40,8 +40,7 @@
                     <input [type]="showPass ? 'text' : 'password'" formControlName="password"
                         placeholder="Mínimo 8 caracteres"
                         [class.error]="f['password'].touched && f['password'].invalid">
-                    <button type="button" class="pass-toggle" (click)="showPass=!showPass">{{ showPass ? '🙈' : '👁️'
-                        }}</button>
+                    <button type="button" class="pass-toggle" (click)="showPass=!showPass"></button>
                 </div>
                 @if (f['password'].touched && f['password'].errors?.['minlength']) { <span class="field-error">Mínimo 8
                     caracteres</span> }

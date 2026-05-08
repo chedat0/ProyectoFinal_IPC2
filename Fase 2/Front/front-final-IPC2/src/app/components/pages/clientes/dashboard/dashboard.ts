@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Layout } from '../../../shared/layout/layout';
@@ -26,7 +26,7 @@ export class Dashboard implements OnInit {
   contratos: any[] = []; 
   loading = true;
 
-  constructor(private service: ClienteServicio) { }
+  constructor(private service: ClienteServicio, private cdr: ChangeDetectorRef) { }
   
   ngOnInit() {
     Promise.all([this.service.getProyectos().toPromise(), this.service.getContratos().toPromise(), this.service.getPerfil().toPromise()])
@@ -39,6 +39,7 @@ export class Dashboard implements OnInit {
         this.stats.contratos = cont.length; 
         this.stats.saldo = perf?.data?.saldoDisponible || 0;
         this.loading = false;
-      }).catch(() => this.loading = false);
+        this.cdr.detectChanges();
+      }).catch(() => {this.loading = false; this.cdr.detectChanges(); });
   }
 }

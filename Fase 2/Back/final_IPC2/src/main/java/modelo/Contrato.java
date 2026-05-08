@@ -26,6 +26,33 @@ public class Contrato {
     private String proyectoTitulo;
     private String clienteNombre;
     private String freelancerNombre;
+    private Integer calificacionId;
+    private Integer calificacionEstrellas;
+    private String calificacionComentario;
+
+    public Integer getCalificacionId() {
+        return calificacionId;
+    }
+
+    public void setCalificacionId(Integer calificacionId) {
+        this.calificacionId = calificacionId;
+    }
+
+    public Integer getCalificacionEstrellas() {
+        return calificacionEstrellas;
+    }
+
+    public void setCalificacionEstrellas(Integer calificacionEstrellas) {
+        this.calificacionEstrellas = calificacionEstrellas;
+    }
+
+    public String getCalificacionComentario() {
+        return calificacionComentario;
+    }
+
+    public void setCalificacionComentario(String calificacionComentario) {
+        this.calificacionComentario = calificacionComentario;
+    }
     
     public Contrato () {}
 

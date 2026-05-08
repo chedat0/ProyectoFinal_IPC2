@@ -21,8 +21,7 @@
                 <div class="input-wrap">
                     <input [type]="showPass ? 'text' : 'password'" formControlName="password" placeholder="••••••••"
                         [class.error]="f['password'].touched && f['password'].invalid" autocomplete="current-password">
-                    <button type="button" class="pass-toggle" (click)="showPass=!showPass">{{ showPass ? '🙈' : '👁️'
-                        }}</button>
+                    <button type="button" class="pass-toggle" (click)="showPass=!showPass"> </button>
                 </div>
                 @if (f['password'].touched && f['password'].errors?.['required']) {
                 <span class="field-error">Este campo es requerido</span>

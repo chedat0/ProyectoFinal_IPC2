@@ -1,0 +1,345 @@
+.ln-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(248, 245, 225, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+}
+
+.ln-nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ln-brand {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+
+.ln-logo {
+    height: 36px;
+    width: auto;
+}
+
+.ln-logo-sm {
+    height: 24px;
+    width: auto;
+}
+
+.ln-name {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--pizarra);
+}
+
+.ln-nav-links {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+}
+
+/* ── Hero ── */
+.ln-hero {
+    background: linear-gradient(135deg, var(--pizarra) 0%, #1e2530 100%);
+    color: #fff;
+    padding: 6rem 1.5rem 5rem;
+    text-align: center;
+}
+
+.ln-hero-inner {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.ln-hero-badge {
+    display: inline-block;
+    background: rgba(186, 102, 72, .25);
+    color: #e8956d;
+    border: 1px solid rgba(186, 102, 72, .4);
+    border-radius: 20px;
+    padding: .3rem 1rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+}
+
+.ln-hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 1.25rem;
+}
+
+.ln-accent {
+    color: var(--terracota);
+}
+
+.ln-hero-sub {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, .75);
+    max-width: 620px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+}
+
+.ln-hero-ctas {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.ln-hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.ln-hstat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .2rem;
+}
+
+.ln-hstat-val {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.ln-hstat-label {
+    font-size: .78rem;
+    color: rgba(255, 255, 255, .55);
+}
+
+.ln-hstat-sep {
+    width: 1px;
+    height: 36px;
+    background: rgba(255, 255, 255, .15);
+}
+
+/* ── Sections ── */
+.ln-section {
+    padding: 5rem 1.5rem;
+}
+
+.ln-section-alt {
+    background: var(--blanco);
+}
+
+.ln-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.ln-section-head {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.ln-section-head h2 {
+    font-size: 2rem;
+    margin-bottom: .6rem;
+}
+
+.ln-section-head p {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* ── Features grid ── */
+.ln-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.ln-feature-card {
+    background: var(--blanco);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow .2s, transform .2s;
+}
+
+.ln-feature-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.ln-feature-icon {
+    font-size: 2rem;
+    margin-bottom: .75rem;
+}
+
+.ln-feature-card h3 {
+    margin-bottom: .4rem;
+    font-size: 1rem;
+}
+
+.ln-feature-card p {
+    font-size: .875rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* ── Steps ── */
+.ln-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.ln-step {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    background: var(--crema);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+}
+
+.ln-step-num {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--terracota);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 48px;
+    text-align: center;
+}
+
+.ln-step-role {
+    display: inline-block;
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--terracota);
+    background: rgba(186, 102, 72, .1);
+    border-radius: 20px;
+    padding: .15rem .6rem;
+    margin-bottom: .4rem;
+}
+
+.ln-step-body h3 {
+    margin-bottom: .3rem;
+    font-size: 1rem;
+}
+
+.ln-step-body p {
+    font-size: .875rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* ── CTA final ── */
+.ln-cta {
+    background: linear-gradient(135deg, var(--terracota) 0%, #a5583d 100%);
+    color: #fff;
+    padding: 5rem 1.5rem;
+    text-align: center;
+}
+
+.ln-cta h2 {
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: .6rem;
+}
+
+.ln-cta>.ln-container>p {
+    color: rgba(255, 255, 255, .8);
+    margin-bottom: 2rem;
+    font-size: 1rem;
+}
+
+.ln-cta-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.ln-cta-login {
+    font-size: .875rem;
+    color: rgba(255, 255, 255, .7);
+}
+
+.ln-cta-login a {
+    color: #fff;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* ── Footer ── */
+.ln-footer {
+    background: var(--pizarra);
+    color: rgba(255, 255, 255, .5);
+    padding: 1.5rem;
+    text-align: center;
+    font-size: .83rem;
+}
+
+.ln-footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    color: rgba(255, 255, 255, .8);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    margin-bottom: .4rem;
+}
+
+.ln-footer img {
+    filter: brightness(0) invert(1);
+    opacity: .7;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+    .ln-hero-title {
+        font-size: 2rem;
+    }
+
+    .ln-hero-ctas {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ln-cta-btns {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ln-step {
+        flex-direction: column;
+        gap: .75rem;
+    }
+
+    .ln-step-num {
+        width: auto;
+    }
+}

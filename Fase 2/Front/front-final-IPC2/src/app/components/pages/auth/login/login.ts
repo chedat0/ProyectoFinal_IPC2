@@ -37,10 +37,12 @@ export class Login {
         else if (rol === 'FREELANCER') this.router.navigate(['/freelancer/dashboard']);
         else if (rol === 'ADMINISTRADOR') this.router.navigate(['/admin/dashboard']);
         else this.error = 'Rol no reconocido: ' + JSON.stringify(rol);
+        this.cdr.detectChanges();
       },
       error: (e: any) => {
         this.error = e?.message || 'Credenciales incorrectas';
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }

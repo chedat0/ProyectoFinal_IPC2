@@ -23,7 +23,7 @@ export class ClienteServicio {
 
     getContratos(): Observable<any> { return this.http.get(`${this.url}/contratos`); }
     getContrato(id: number): Observable<any> { return this.http.get(`${this.url}/contratos/${id}`); }
-    cancelarContrato(id: number): Observable<any> { return this.http.put(`${this.url}/contratos/${id}/cancelar`, {}); }
+    cancelarContrato(id: number, motivo: string): Observable<any> { return this.http.put(`${this.url}/contratos/${id}/cancelar`, {motivo}); }
 
     getEntregas(contratoId: number): Observable<any> { return this.http.get(`${this.url}/contratos/${contratoId}/entregas`); }
     aprobarEntrega(entId: number): Observable<any> { return this.http.put(`${this.url}/entregas/${entId}/aprobar`, {}); }

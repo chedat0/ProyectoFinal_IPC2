@@ -1,32 +1,51 @@
 <app-layout [navItems]="nav">
-    <div class="page-header">
-        <h1>Reportes de Plataforma</h1>
-        <p>Analiza el rendimiento global de ConnectWork</p>
+
+    <!-- Solo visible al imprimir -->
+    <div class="print-header">
+        <div class="print-brand">ConnectWork — Administración</div>
+        <h2>{{ tabLabel }}</h2>
+        <p>{{ periodoLabel }}</p>
+        <p class="print-fecha">Generado el {{ today | date:'dd/MM/yyyy HH:mm' }}</p>
     </div>
-    <div class="card" style="margin-bottom:1.5rem">
+
+    <div class="page-header no-print">
+        <div class="page-header-row">
+            <div>
+                <h1>Reportes de Plataforma</h1>
+                <p>Analiza el rendimiento global de ConnectWork</p>
+            </div>
+            @if (hayDatos) {
+            <button class="btn btn-outline btn-sm" (click)="exportarPDF()">⬇ Exportar PDF</button>
+            }
+        </div>
+    </div>
+
+    <div class="card no-print" style="margin-bottom:1.5rem">
         <div class="tabs">
-            <button class="tab-btn" [class.active]="tab==='ingresos'" (click)="cambiar('ingresos')">💹 Ingresos
-                totales</button>
-            <button class="tab-btn" [class.active]="tab==='freelancers'" (click)="cambiar('freelancers')">⭐ Top
-                Freelancers</button>
-            <button class="tab-btn" [class.active]="tab==='categorias'" (click)="cambiar('categorias')">🗂️ Top
-                Categorías</button>
+            <button class="tab-btn" [class.active]="tab==='ingresos'"    (click)="cambiar('ingresos')">💹 Ingresos totales</button>
+            <button class="tab-btn" [class.active]="tab==='freelancers'" (click)="cambiar('freelancers')">⭐ Top Freelancers</button>
+            <button class="tab-btn" [class.active]="tab==='categorias'"  (click)="cambiar('categorias')">🗂️ Top Categorías</button>
         </div>
         <form [formGroup]="form" (ngSubmit)="cargar()"
             style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem">
-            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Desde</label><input
-                    formControlName="fechaInicio" type="date"></div>
-            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Hasta</label><input
-                    formControlName="fechaFin" type="date"></div>
+            <div class="form-group" style="margin:0;flex:1;min-width:140px">
+                <label>Desde</label><input formControlName="fechaInicio" type="date">
+            </div>
+            <div class="form-group" style="margin:0;flex:1;min-width:140px">
+                <label>Hasta</label><input formControlName="fechaFin" type="date">
+            </div>
             <button type="submit" class="btn btn-primary">Filtrar</button>
         </form>
     </div>
-    @if (loading) { <div class="spinner-wrap">
-        <div class="spinner"></div>
-    </div> }
+
+    @if (loading) { <div class="spinner-wrap no-print"><div class="spinner"></div></div> }
+
     @if (!loading && datos !== null) {
+
+    <!-- ── Ingresos ── -->
     @if (tab === 'ingresos') {
-    <div class="stats-row">
+    <!-- Stat cards (pantalla) -->
+    <div class="stats-row no-print">
         <div class="stat-card">
             <div class="stat-icon">📄</div>
             <div class="stat-val">{{ datos?.contratos_completados || 0 }}</div>
@@ -38,12 +57,28 @@
             <div class="stat-label">Comisiones cobradas</div>
         </div>
     </div>
+    <!-- Tabla imprimible para ingresos -->
+    <div class="card print-only-block">
+        <table class="cw-table">
+            <thead>
+                <tr><th>Métrica</th><th>Valor</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Contratos completados</td><td>{{ datos?.contratos_completados || 0 }}</td></tr>
+                <tr><td>Comisiones cobradas</td><td>Q{{ (datos?.total_comisiones || 0) | number:'1.2-2' }}</td></tr>
+            </tbody>
+        </table>
+    </div>
     }
+
+    <!-- ── Top Freelancers ── -->
     @if (tab === 'freelancers') {
-    @if (asArray().length === 0) { <div class="empty-state card">
+    @if (asArray().length === 0) {
+    <div class="empty-state card no-print">
         <div class="empty-icon">⭐</div>
         <h3>Sin datos para el período</h3>
-    </div> }
+    </div>
+    }
     @if (asArray().length > 0) {
     <div class="card">
         <table class="cw-table">
@@ -71,11 +106,15 @@
     </div>
     }
     }
+
+    <!-- ── Top Categorías ── -->
     @if (tab === 'categorias') {
-    @if (asArray().length === 0) { <div class="empty-state card">
+    @if (asArray().length === 0) {
+    <div class="empty-state card no-print">
         <div class="empty-icon">🗂️</div>
         <h3>Sin datos para el período</h3>
-    </div> }
+    </div>
+    }
     @if (asArray().length > 0) {
     <div class="card">
         <table class="cw-table">
@@ -101,5 +140,6 @@
     </div>
     }
     }
+
     }
 </app-layout>

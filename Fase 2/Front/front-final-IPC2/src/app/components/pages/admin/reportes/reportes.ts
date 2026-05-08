@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, DatePipe} from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Layout } from '../../../shared/layout/layout';
@@ -15,11 +15,18 @@ const NAV = [
   { label:'Reportes',    icon:'📈', path:'/admin/reportes'    },
 ];
 
+const TAB_LABELS: Record<string, string> = {
+  ingresos:    'Resumen de Ingresos y Comisiones',
+  freelancers: 'Top Freelancers',
+  categorias:  'Top Categorías',
+};
+
 @Component({
   selector: 'app-reportes',
   imports: [CommonModule, ReactiveFormsModule, RouterModule, Layout],
   templateUrl: './reportes.html',
   styleUrl: './reportes.css',
+  providers: [DatePipe],
 })
 
 export class Reportes implements OnInit {
@@ -28,8 +35,9 @@ export class Reportes implements OnInit {
   datos:any=null; 
   loading=false; 
   form!:FormGroup;
+  today = new Date();
 
-  constructor(private service:AdminServicio, private fb:FormBuilder){}
+  constructor(private service:AdminServicio, private fb:FormBuilder, private cdr:ChangeDetectorRef, private dp: DatePipe){}
   
   ngOnInit(){
     this.form=this.fb.group({
@@ -38,18 +46,33 @@ export class Reportes implements OnInit {
       this.cargar();
   }
 
-  cargar(){
-    this.loading=true; 
-    this.datos=null;
-    const {fechaInicio,fechaFin}=this.form.value;
-    const obs=this.tab==='ingresos'?this.service.reporteIngresos(fechaInicio,fechaFin)
-      :this.tab==='freelancers'?this.service.reporteTopFreelancers()
-      :this.service.reporteTopCategorias();
-    obs.subscribe({next:(r:any)=>{
-      this.datos=r?.data;
-      this.loading=false;
-    },
-    error:()=>this.loading= false });
+  get tabLabel(): string { return TAB_LABELS[this.tab] || ''; }
+
+  get periodoLabel(): string {
+    const { fechaInicio, fechaFin } = this.form.value;
+    const desde = fechaInicio ? this.dp.transform(fechaInicio, 'dd/MM/yyyy') : '—';
+    const hasta  = fechaFin   ? this.dp.transform(fechaFin,    'dd/MM/yyyy') : '—';
+    return `Período: ${desde} al ${hasta}`;
+  }
+
+  get hayDatos(): boolean {
+    if (this.tab === 'ingresos') return this.datos !== null;
+    return this.asArray().length > 0;
+  }
+
+  cargar() {
+    this.loading = true;
+    this.datos = null;
+    const { fechaInicio, fechaFin } = this.form.value;
+    const obs = this.tab === 'ingresos'
+      ? this.service.reporteIngresos(fechaInicio, fechaFin)
+      : this.tab === 'freelancers'
+        ? this.service.reporteTopFreelancers()
+        : this.service.reporteTopCategorias();
+    obs.subscribe({
+      next: (r: any) => { this.datos = r?.data; this.loading = false; this.cdr.detectChanges(); },
+      error: () => { this.loading = false; this.cdr.detectChanges(); }
+    });
   }
 
   asArray() {
@@ -61,4 +84,6 @@ export class Reportes implements OnInit {
     this.tab=t;
     this.cargar();
   }
+
+  exportarPDF() { window.print(); }
 }

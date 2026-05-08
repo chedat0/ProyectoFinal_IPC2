@@ -1,78 +1,97 @@
 <app-layout [navItems]="nav">
-    <div class="page-header">
-        <h1>Reportes</h1>
-        <p>Analiza tu rendimiento como freelancer</p>
+
+    <div class="print-header">
+        <div class="print-brand">ConnectWork</div>
+        <h2>{{ tabLabel }}</h2>
+        <p>{{ periodoLabel }}</p>
+        <p class="print-fecha">Generado el {{ today | date:'dd/MM/yyyy HH:mm' }}</p>
     </div>
-    <div class="card" style="margin-bottom:1.5rem">
-        <div class="tabs"><button class="tab-btn" [class.active]="tab==='contratos'"
-                (click)="cambiar('contratos')">Contratos</button><button class="tab-btn"
-                [class.active]="tab==='categorias'" (click)="cambiar('categorias')">Por categoría</button><button
-                class="tab-btn" [class.active]="tab==='propuestas'" (click)="cambiar('propuestas')">Propuestas</button>
+
+    <div class="page-header no-print">
+        <div class="page-header-row">
+            <div>
+                <h1>Reportes</h1>
+                <p>Analiza tu rendimiento como freelancer</p>
+            </div>
+            @if (datos.length > 0) {
+            <button class="btn btn-outline btn-sm" (click)="exportarPDF()">⬇ Exportar PDF</button>
+            }
+        </div>
+    </div>
+
+    <div class="card no-print" style="margin-bottom:1.5rem">
+        <div class="tabs">
+            <button class="tab-btn" [class.active]="tab==='contratos'" (click)="cambiar('contratos')">Contratos</button>
+            <button class="tab-btn" [class.active]="tab==='categorias'" (click)="cambiar('categorias')">Por categoría</button>
+            <button class="tab-btn" [class.active]="tab==='propuestas'" (click)="cambiar('propuestas')">Propuestas</button>
         </div>
         <form [formGroup]="form" (ngSubmit)="cargar()"
             style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem">
-            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Desde</label><input
-                    formControlName="fechaInicio" type="date"></div>
-            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Hasta</label><input
-                    formControlName="fechaFin" type="date"></div>
+            <div class="form-group" style="margin:0;flex:1;min-width:140px">
+                <label>Desde</label><input formControlName="fechaInicio" type="date">
+            </div>
+            <div class="form-group" style="margin:0;flex:1;min-width:140px">
+                <label>Hasta</label><input formControlName="fechaFin" type="date">
+            </div>
             <button type="submit" class="btn btn-primary">Filtrar</button>
         </form>
     </div>
-    @if (loading) { <div class="spinner-wrap">
-        <div class="spinner"></div>
-    </div> }
+
+    @if (loading) { <div class="spinner-wrap no-print"><div class="spinner"></div></div> }
+
     @if (!loading) {
-    @if (datos.length===0){<div class="empty-state card">
+    @if (datos.length === 0) {
+    <div class="empty-state card no-print">
         <div class="empty-icon">📈</div>
         <h3>Sin datos</h3>
-    </div>}
-    @if (datos.length>0){
+    </div>
+    }
+    @if (datos.length > 0) {
     <div class="card">
         <table class="cw-table">
             <thead>
-                @if (tab==='contratos'){<tr>
-                    <th>Proyecto</th>
-                    <th>Cliente</th>
-                    <th>Monto</th>
-                    <th>Estrellas</th>
-                    <th>Fecha</th>
-                </tr>}
-                @if (tab==='categorias'){<tr>
-                    <th>Categoría</th>
-                    <th>Contratos</th>
-                    <th>Total ingresos</th>
-                </tr>}
-                @if (tab==='propuestas'){<tr>
-                    <th>Proyecto</th>
-                    <th>Monto</th>
-                    <th>Estado</th>
-                    <th>Fecha</th>
-                </tr>}
+                @if (tab==='contratos') {
+                <tr><th>Proyecto</th><th>Cliente</th><th>Monto</th><th>Estrellas</th><th>Fecha</th></tr>
+                }
+                @if (tab==='categorias') {
+                <tr><th>Categoría</th><th>Contratos</th><th>Total ingresos</th></tr>
+                }
+                @if (tab==='propuestas') {
+                <tr><th>Proyecto</th><th>Monto</th><th>Estado</th><th>Fecha</th></tr>
+                }
             </thead>
             <tbody>
-                @if (tab==='contratos'){@for (d of datos;track $index){<tr>
-                    <td>{{d.titulo}}</td>
-                    <td>{{d.cliente}}</td>
-                    <td>Q{{d.monto|number:'1.2-2'}}</td>
-                    <td>{{d.estrellas || '—'}}</td>
-                    <td>{{d.fecha_fin|date:'dd/MM/yyyy'}}</td>
-                </tr>}}
-                @if (tab==='categorias'){@for (d of datos;track $index){<tr>
-                    <td>{{d.nombre}}</td>
-                    <td>{{d.contratos}}</td>
-                    <td><strong>Q{{d.total_ingresos|number:'1.2-2'}}</strong></td>
-                </tr>}}
-                @if (tab==='propuestas'){@for (d of datos;track $index){<tr>
-                    <td>{{d.proyectoTitulo}}</td>
-                    <td>Q{{d.montoOfertado|number:'1.2-2'}}</td>
-                    <td><span class="badge"
-                            [ngClass]="{'badge-warning':d.estado==='PENDIENTE','badge-success':d.estado==='ACEPTADA','badge-error':d.estado==='RECHAZADA'}">{{d.estado}}</span>
-                    </td>
-                    <td>{{d.fechaEnvio|date:'dd/MM/yyyy'}}</td>
-                </tr>}}
+                @if (tab==='contratos') {
+                @for (d of datos; track $index) {
+                <tr>
+                    <td>{{ d.titulo }}</td>
+                    <td>{{ d.cliente }}</td>
+                    <td>Q{{ d.monto | number:'1.2-2' }}</td>
+                    <td>{{ d.estrellas || '—' }}</td>
+                    <td>{{ d.fecha_fin | date:'dd/MM/yyyy' }}</td>
+                </tr>
+                }}
+                @if (tab==='categorias') {
+                @for (d of datos; track $index) {
+                <tr>
+                    <td>{{ d.nombre }}</td>
+                    <td>{{ d.contratos }}</td>
+                    <td>Q{{ d.total_ingresos | number:'1.2-2' }}</td>
+                </tr>
+                }}
+                @if (tab==='propuestas') {
+                @for (d of datos; track $index) {
+                <tr>
+                    <td>{{ d.proyectoTitulo }}</td>
+                    <td>Q{{ d.montoOfertado | number:'1.2-2' }}</td>
+                    <td>{{ d.estado }}</td>
+                    <td>{{ d.fechaEnvio | date:'dd/MM/yyyy' }}</td>
+                </tr>
+                }}
             </tbody>
         </table>
     </div>
     }
     }
+
 </app-layout>

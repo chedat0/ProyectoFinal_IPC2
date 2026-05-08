@@ -1,90 +1,98 @@
 <app-layout [navItems]="nav">
-    <div class="page-header">
-        <h1>Reportes</h1>
-        <p>Analiza tu actividad como cliente</p>
+
+    <!-- Encabezado solo visible al imprimir -->
+    <div class="print-header">
+        <div class="print-brand">ConnectWork</div>
+        <h2>{{ tabLabel }}</h2>
+        <p>{{ periodoLabel }}</p>
+        <p class="print-fecha">Generado el {{ today | date:'dd/MM/yyyy HH:mm' }}</p>
     </div>
-    <div class="card" style="margin-bottom:1.5rem">
+
+    <div class="page-header no-print">
+        <div class="page-header-row">
+            <div>
+                <h1>Reportes</h1>
+                <p>Analiza tu actividad como cliente</p>
+            </div>
+            @if (datos.length > 0) {
+            <button class="btn btn-outline btn-sm" (click)="exportarPDF()">⬇ Exportar PDF</button>
+            }
+        </div>
+    </div>
+
+    <div class="card no-print" style="margin-bottom:1.5rem">
         <div class="tabs">
-            <button class="tab-btn" [class.active]="tab==='proyectos'"
-                (click)="cambiarTab('proyectos')">Proyectos</button>
+            <button class="tab-btn" [class.active]="tab==='proyectos'" (click)="cambiarTab('proyectos')">Proyectos</button>
             <button class="tab-btn" [class.active]="tab==='recargas'" (click)="cambiarTab('recargas')">Recargas</button>
-            <button class="tab-btn" [class.active]="tab==='gastos'" (click)="cambiarTab('gastos')">Gastos por
-                categoría</button>
+            <button class="tab-btn" [class.active]="tab==='gastos'" (click)="cambiarTab('gastos')">Gastos por categoría</button>
         </div>
         <form [formGroup]="form" (ngSubmit)="cargar()"
             style="display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem">
-            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Desde</label><input
-                    formControlName="fechaInicio" type="date"></div>
-            <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Hasta</label><input
-                    formControlName="fechaFin" type="date"></div>
+            <div class="form-group" style="margin:0;flex:1;min-width:140px">
+                <label>Desde</label><input formControlName="fechaInicio" type="date">
+            </div>
+            <div class="form-group" style="margin:0;flex:1;min-width:140px">
+                <label>Hasta</label><input formControlName="fechaFin" type="date">
+            </div>
             <button type="submit" class="btn btn-primary">Filtrar</button>
         </form>
     </div>
-    @if (loading) { <div class="spinner-wrap">
-        <div class="spinner"></div>
-    </div> }
+
+    @if (loading) { <div class="spinner-wrap no-print"><div class="spinner"></div></div> }
+
     @if (!loading) {
-    @if (datos.length === 0) { <div class="empty-state card">
+    @if (datos.length === 0) {
+    <div class="empty-state card no-print">
         <div class="empty-icon">📈</div>
         <h3>Sin datos para el período seleccionado</h3>
-    </div> }
+    </div>
+    }
     @if (datos.length > 0) {
-    <div class="card">
+    <div class="card" id="reporte-tabla">
         <table class="cw-table">
             <thead>
-                @if (tab === 'proyectos') { <tr>
-                    <th>Título</th>
-                    <th>Estado</th>
-                    <th>Monto</th>
-                    <th>Freelancer</th>
-                    <th>Fecha fin</th>
-                </tr> }
-                @if (tab === 'recargas') { <tr>
-                    <th>Método</th>
-                    <th>Referencia</th>
-                    <th>Monto</th>
-                    <th>Fecha</th>
-                </tr> }
-                @if (tab === 'gastos') { <tr>
-                    <th>Categoría</th>
-                    <th>Contratos</th>
-                    <th>Total gastado</th>
-                </tr> }
+                @if (tab === 'proyectos') {
+                <tr><th>Título</th><th>Estado</th><th>Monto</th><th>Freelancer</th><th>Fecha fin</th></tr>
+                }
+                @if (tab === 'recargas') {
+                <tr><th>Método</th><th>Referencia</th><th>Monto</th><th>Fecha</th></tr>
+                }
+                @if (tab === 'gastos') {
+                <tr><th>Categoría</th><th>Contratos</th><th>Total gastado</th></tr>
+                }
             </thead>
             <tbody>
                 @if (tab === 'proyectos') {
                 @for (d of datos; track $index) {
                 <tr>
                     <td>{{ d.titulo }}</td>
-                    <td><span class="badge badge-neutral">{{ d.estado }}</span></td>
+                    <td>{{ d.estado }}</td>
                     <td>Q{{ d.monto | number:'1.2-2' }}</td>
                     <td>{{ d.freelancer || '—' }}</td>
                     <td>{{ d.fecha_fin | date:'dd/MM/yyyy' }}</td>
                 </tr>
-                }
-                }
+                }}
                 @if (tab === 'recargas') {
                 @for (d of datos; track $index) {
                 <tr>
                     <td>{{ d.metodoPago }}</td>
                     <td>{{ d.referencia || '—' }}</td>
-                    <td><strong>Q{{ d.monto | number:'1.2-2' }}</strong></td>
+                    <td>Q{{ d.monto | number:'1.2-2' }}</td>
                     <td>{{ d.fecha | date:'dd/MM/yyyy' }}</td>
                 </tr>
-                }
-                }
+                }}
                 @if (tab === 'gastos') {
                 @for (d of datos; track $index) {
                 <tr>
                     <td>{{ d.categoria }}</td>
                     <td>{{ d.contratos }}</td>
-                    <td><strong>Q{{ d.total_gastado | number:'1.2-2' }}</strong></td>
+                    <td>Q{{ d.total_gastado | number:'1.2-2' }}</td>
                 </tr>
-                }
-                }
+                }}
             </tbody>
         </table>
     </div>
     }
     }
+
 </app-layout>

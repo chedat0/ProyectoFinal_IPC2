@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Header } from '../header/header';
@@ -15,13 +15,14 @@ export class Layout implements OnInit{
   @Input() navItems: NavItem[] = [];
   userName = ''; 
   role = '';
-  constructor(private auth: AuthServicio) {}
+  constructor(private auth: AuthServicio, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.auth.currentUser$.subscribe((u: any) => {
       if (u) { 
         this.userName = u.nombreCompleto || u.username || ''; 
         this.role = u.rol || u.tipoUsuario || ''; }
+        this.cdr.detectChanges();
     });
   }
 }

@@ -5,14 +5,18 @@
     </div>
     @if (error) { <div class="alert alert-error">{{ error }}</div> }
     @if (success) { <div class="alert alert-success">{{ success }}</div> }
-    @if (loading) { <div class="spinner-wrap">
+    @if (loading) {
+    <div class="spinner-wrap">
         <div class="spinner"></div>
-    </div> }
+    </div>
+    }
     @if (!loading) {
-    @if (contratos.length === 0) { <div class="empty-state card">
+    @if (contratos.length === 0) {
+    <div class="empty-state card">
         <div class="empty-icon">📄</div>
         <h3>Sin contratos</h3>
-    </div> }
+    </div>
+    }
     @for (c of contratos; track c.id) {
     <div class="contrato-card card">
         <div class="ct-head">
@@ -22,19 +26,35 @@
             </div>
             <div class="ct-right">
                 <span class="badge"
-                    [ngClass]="{'badge-success':c.estado==='ACTIVO','badge-neutral':c.estado==='COMPLETADO','badge-error':c.estado==='CANCELADO'}">{{
-                    c.estado }}</span>
+                    [ngClass]="{'badge-success':c.estado==='ACTIVO','badge-neutral':c.estado==='COMPLETADO','badge-error':c.estado==='CANCELADO'}">
+                    {{ c.estado }}
+                </span>
                 <div class="ct-monto">Q{{ c.monto | number:'1.2-2' }}</div>
             </div>
         </div>
-        <div class="ct-actions">
-            <button class="btn btn-outline btn-sm" (click)="verEntregas(c)">📦 {{ contratoSel?.id===c.id ? 'Ocultar' :
-                'Ver' }} entregas</button>
-            @if (c.estado === 'ACTIVO') { <button class="btn btn-danger btn-sm" (click)="cancelar(c.id)">Cancelar
-                contrato</button> }
-            @if (c.estado === 'COMPLETADO') { <button class="btn btn-outline-terra btn-sm" (click)="abrirCal(c.id)">⭐
-                Calificar</button> }
+        
+        @if (c.calificacionId) {
+        <div class="cal-display">
+            <span class="cal-stars">{{ stars(c.calificacionEstrellas) }}</span>
+            <span class="cal-num">({{ c.calificacionEstrellas }}/5)</span>
+            @if (c.calificacionComentario) {
+            <span class="cal-comment">"{{ c.calificacionComentario }}"</span>
+            }
         </div>
+        }
+
+        <div class="ct-actions">
+            <button class="btn btn-outline btn-sm" (click)="verEntregas(c)">
+                📦 {{ contratoSel?.id===c.id ? 'Ocultar' : 'Ver' }} entregas
+            </button>
+            @if (c.estado === 'ACTIVO') {
+            <button class="btn btn-danger btn-sm" (click)="cancelar(c.id)">Cancelar contrato</button>
+            }
+            @if (c.estado === 'COMPLETADO' && !c.calificacionId) {
+            <button class="btn btn-outline-terra btn-sm" (click)="abrirCal(c.id)">⭐ Calificar</button>
+            }
+        </div>
+
         @if (contratoSel?.id === c.id) {
         <div class="entregas-section">
             <h3>Entregas</h3>
@@ -46,8 +66,9 @@
                     <div class="ent-fecha">{{ e.fechaEnvio | date:'dd/MM/yyyy' }}</div>
                 </div>
                 <span class="badge"
-                    [ngClass]="{'badge-warning':e.estado==='PENDIENTE','badge-success':e.estado==='APROBADA','badge-error':e.estado==='RECHAZADA'}">{{
-                    e.estado }}</span>
+                    [ngClass]="{'badge-warning':e.estado==='PENDIENTE','badge-success':e.estado==='APROBADA','badge-error':e.estado==='RECHAZADA'}">
+                    {{ e.estado }}
+                </span>
                 @if (e.estado === 'PENDIENTE') {
                 <div class="ent-actions">
                     <button class="btn btn-success btn-sm" (click)="aprobar(e.id)">✓ Aprobar</button>
@@ -61,41 +82,55 @@
     </div>
     }
     }
+
     @if (showRechModal) {
     <div class="modal-overlay" (click)="showRechModal=false">
         <div class="modal-box" (click)="$event.stopPropagation()">
             <div class="modal-header">
-                <h2>Rechazar entrega</h2><button class="modal-close" (click)="showRechModal=false">✕</button>
+                <h2>Rechazar entrega</h2>
+                <button class="modal-close" (click)="showRechModal=false">✕</button>
             </div>
             <div class="modal-body">
                 <form [formGroup]="rechForm">
-                    <div class="form-group"><label>Motivo del rechazo *</label><textarea formControlName="comentario"
-                            rows="3" placeholder="Explica qué necesita corregirse..."></textarea></div>
+                    <div class="form-group">
+                        <label>Motivo del rechazo *</label>
+                        <textarea formControlName="comentario" rows="3"
+                            placeholder="Explica qué necesita corregirse..."></textarea>
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer"><button class="btn btn-ghost"
-                    (click)="showRechModal=false">Cancelar</button><button class="btn btn-danger"
-                    (click)="rechazar()">Rechazar entrega</button></div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="showRechModal=false">Cancelar</button>
+                <button class="btn btn-danger" (click)="rechazar()">Rechazar entrega</button>
+            </div>
         </div>
     </div>
     }
+
     @if (showCalModal) {
     <div class="modal-overlay" (click)="showCalModal=false">
         <div class="modal-box" (click)="$event.stopPropagation()">
             <div class="modal-header">
-                <h2>Calificar freelancer</h2><button class="modal-close" (click)="showCalModal=false">✕</button>
+                <h2>Calificar freelancer</h2>
+                <button class="modal-close" (click)="showCalModal=false">✕</button>
             </div>
             <div class="modal-body">
                 <form [formGroup]="calForm">
-                    <div class="form-group"><label>Calificación (1-5) *</label><input formControlName="estrellas"
-                            type="number" min="1" max="5"></div>
-                    <div class="form-group"><label>Comentario</label><textarea formControlName="comentario" rows="3"
-                            placeholder="¿Cómo fue tu experiencia?"></textarea></div>
+                    <div class="form-group">
+                        <label>Calificación (1–5) *</label>
+                        <input formControlName="estrellas" type="number" min="1" max="5">
+                    </div>
+                    <div class="form-group">
+                        <label>Comentario</label>
+                        <textarea formControlName="comentario" rows="3"
+                            placeholder="¿Cómo fue tu experiencia?"></textarea>
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer"><button class="btn btn-ghost"
-                    (click)="showCalModal=false">Cancelar</button><button class="btn btn-primary"
-                    (click)="calificar()">Enviar calificación</button></div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="showCalModal=false">Cancelar</button>
+                <button class="btn btn-primary" (click)="calificar()">Enviar calificación</button>
+            </div>
         </div>
     </div>
     }

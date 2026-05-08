@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -35,7 +35,7 @@ export class Explorar implements OnInit {
   error = ''; 
   success = '';
 
-  constructor(private service: FreelancerServicio, private catalogo: CatalogoServicio, private fb: FormBuilder) { }
+  constructor(private service: FreelancerServicio, private catalogo: CatalogoServicio, private fb: FormBuilder, private cdr: ChangeDetectorRef) { }
   
   ngOnInit() {
     this.filterForm = this.fb.group({ 
@@ -55,6 +55,7 @@ export class Explorar implements OnInit {
       .then(([c, h]: any[]) => { 
         this.categorias = c?.data || []; 
         this.habilidades = h?.data || []; 
+        this.cdr.detectChanges();
       });
     this.buscar();
   }
@@ -65,7 +66,8 @@ export class Explorar implements OnInit {
     this.service.getProyectos(filtros).subscribe({ next: (r: any) => { 
         this.proyectos = r?.data || []; 
         this.loading = false; 
-      }, error: () => this.loading = false });
+        this.cdr.detectChanges();
+      }, error: () => {this.loading = false; this.cdr.detectChanges(); }});
   }
 
   limpiar() { 
@@ -98,8 +100,11 @@ export class Explorar implements OnInit {
     } else 
       this.error = r?.message || 'Error'; 
       this.sending = false; 
+      this.cdr.detectChanges();
     }, error: (e: any) => { 
       this.error = e?.message || 'Error'; 
-      this.sending = false; } });
+      this.sending = false; 
+      this.cdr.detectChanges();
+    } });
   }
 }

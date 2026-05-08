@@ -3,7 +3,10 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+    {
+        path: '',
+        loadComponent: () => import('./components/pages/landing/landing').then(m => m.Landing)
+    },
 
     // Autenticación 
     {
@@ -109,5 +112,5 @@ export const routes: Routes = [
         loadComponent: () => import('./components/pages/admin/reportes/reportes').then(m => m.Reportes)
     },
 
-    { path: '**', redirectTo: 'auth/login' }
+    { path: '**', redirectTo: '' }
 ];

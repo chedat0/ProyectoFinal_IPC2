@@ -86,3 +86,30 @@
     color: #aaa;
     font-size: .85rem
 }
+
+cal-display {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem .75rem;
+    background: rgba(186, 102, 72, .07);
+    border-radius: var(--radius-sm);
+    margin: .5rem 0;
+    font-size: .875rem;
+}
+
+.cal-stars {
+    color: var(--terracota);
+    letter-spacing: 2px;
+    font-size: 1rem;
+}
+
+.cal-num {
+    color: #888;
+    font-size: .8rem;
+}
+
+.cal-comment {
+    color: #555;
+    font-style: italic;
+}

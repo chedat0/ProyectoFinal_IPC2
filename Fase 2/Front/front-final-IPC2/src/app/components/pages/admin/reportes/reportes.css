@@ -1,12 +1,81 @@
-.rank {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--crema);
-    font-size: .78rem;
-    font-weight: 700;
-    color: var(--pizarra)
+
+.print-header     { display: none; }
+.print-only-block { display: none; }
+
+@media print {
+    /* Ocultar shell de la app */
+    app-sidebar,
+    app-header,
+    app-footer,
+    .no-print {
+        display: none !important;
+    }
+
+    .page-shell   { display: block !important; }
+    .main-content { display: block !important; }
+    .page-body    { padding: 0 !important; overflow: visible !important; }
+
+    /* Encabezado del reporte */
+    .print-header {
+        display: block !important;
+        text-align: center;
+        border-bottom: 2px solid #333;
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .print-brand {
+        font-size: 1.4rem;
+        font-weight: 800;
+        letter-spacing: .04em;
+        margin-bottom: .25rem;
+    }
+
+    .print-fecha { font-size: .8rem; color: #666; }
+
+    /* Mostrar la tabla sustituta de ingresos */
+    .print-only-block { display: block !important; }
+
+    /* Tarjetas de stat: ocultar (ya están en no-print, pero por si acaso) */
+    .stats-row { display: none !important; }
+
+    /* Tabla limpia */
+    .card {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    .cw-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    .cw-table th {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+        border: 1px solid #ccc;
+        padding: 6px 10px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .cw-table td {
+        border: 1px solid #ddd;
+        padding: 5px 10px;
+    }
+
+    .cw-table tr:nth-child(even) td {
+        background: #fafafa;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .rank {
+        font-weight: 700;
+        color: #000;
+    }
+
+    tr { page-break-inside: avoid; }
 }

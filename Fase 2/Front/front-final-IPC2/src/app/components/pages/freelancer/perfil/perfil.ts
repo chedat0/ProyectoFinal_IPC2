@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -34,7 +34,7 @@ export class Perfil implements OnInit {
   error = '';
   success = '';
 
-  constructor(private service: FreelancerServicio, private catalogo: CatalogoServicio, private fb: FormBuilder) { }
+  constructor(private service: FreelancerServicio, private catalogo: CatalogoServicio, private fb: FormBuilder, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -66,7 +66,8 @@ export class Perfil implements OnInit {
           this.editando = true;
         }
         this.loading = false;
-      }).catch(() => { this.editando = true; this.loading = false; });
+        this.cdr.detectChanges();
+      }).catch(() => { this.editando = true; this.loading = false; this.cdr.detectChanges(); });
   }
 
   toggle(id: number) {
@@ -128,9 +129,11 @@ export class Perfil implements OnInit {
         this.error = r?.message || 'Error al guardar';
       }
       this.saving = false;
+      this.cdr.detectChanges();
     }, error: (e: any) => {
       this.error = e?.message || 'Error';
       this.saving = false;
+      this.cdr.detectChanges();
     } });
   }
 }

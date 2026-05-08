@@ -1,0 +1,92 @@
+<!-- NAV -->
+<nav class="ln-nav">
+    <div class="ln-nav-inner">
+        <div class="ln-brand">
+            <img src="connect.png" alt="ConnectWork" class="ln-logo">
+            <span class="ln-name">ConnectWork</span>
+        </div>
+        <div class="ln-nav-links">
+            <a routerLink="/auth/login" class="btn btn-outline btn-sm">Iniciar sesión</a>
+            <a routerLink="/auth/registro" class="btn btn-terracota btn-sm">Registrarse gratis</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="ln-hero">
+    <div class="ln-hero-inner">
+        <div class="ln-hero-badge">Plataforma freelance guatemalteca</div>
+        <h1 class="ln-hero-title">Conecta talento con<br><span class="ln-accent">oportunidades reales</span></h1>
+        <p class="ln-hero-sub">ConnectWork es la plataforma donde clientes publican proyectos y freelancers talentosos
+            de Guatemala ofrecen sus servicios de forma segura y transparente.</p>
+        <div class="ln-hero-ctas">
+            <a routerLink="/auth/registro/cliente" class="btn btn-primary btn-lg">Publicar un proyecto</a>
+            <a routerLink="/auth/registro/freelancer" class="btn btn-outline-terra btn-lg">Soy freelancer</a>
+        </div>
+        <div class="ln-hero-stats">
+            <div class="ln-hstat"><span class="ln-hstat-val">100%</span><span class="ln-hstat-label">Guatemalteco</span>
+            </div>
+            <div class="ln-hstat-sep"></div>
+            <div class="ln-hstat"><span class="ln-hstat-val">Seguro</span><span class="ln-hstat-label">Pagos
+                    protegidos</span></div>
+            <div class="ln-hstat-sep"></div>
+            <div class="ln-hstat"><span class="ln-hstat-val">Gratis</span><span class="ln-hstat-label">Registro sin
+                    costo</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="ln-section">
+    <div class="ln-container">
+        <div class="ln-section-head">
+            <h2>¿Por qué ConnectWork?</h2>
+            <p>Todo lo que necesitas para contratar o trabajar como freelance en un solo lugar.</p>
+        </div>
+        <div class="ln-features-grid">
+            @for (f of features; track f.title) {
+            <div class="ln-feature-card">
+                <div class="ln-feature-icon">{{ f.icon }}</div>
+                <h3>{{ f.title }}</h3>
+                <p>{{ f.desc }}</p>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="ln-section ln-section-alt">
+    <div class="ln-container">
+        <div class="ln-section-head">
+            <h2>¿Cómo funciona?</h2>
+            <p>Cuatro pasos simples para completar tu primer proyecto.</p>
+        </div>
+        <div class="ln-steps">
+            @for (s of steps; track s.num) {
+            <div class="ln-step">
+                <div class="ln-step-num">{{ s.num }}</div>
+                <div class="ln-step-body">
+                    <span class="ln-step-role">{{ s.role }}</span>
+                    <h3>{{ s.title }}</h3>
+                    <p>{{ s.desc }}</p>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="ln-cta">
+    <div class="ln-container">
+        <h2>¿Listo para comenzar?</h2>
+        <p>Únete a ConnectWork hoy mismo. El registro es gratuito.</p>
+        <div class="ln-cta-btns">
+            <a routerLink="/auth/registro/cliente" class="btn btn-primary btn-lg">Soy cliente — publicar proyecto</a>
+            <a routerLink="/auth/registro/freelancer" class="btn btn-outline btn-lg"
+                style="color:#fff;border-color:#fff">Soy freelancer — buscar trabajo</a>
+        </div>
+        <p class="ln-cta-login">¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a></p>
+    </div>
+</section>
+
+<app-footer />
