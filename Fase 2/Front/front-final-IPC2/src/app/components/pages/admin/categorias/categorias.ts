@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -33,7 +33,7 @@ export class Categorias implements OnInit {
   showModal = false; 
   saving = false;
 
-  constructor(private service: AdminServicio, private fb: FormBuilder) { }
+  constructor(private service: AdminServicio, private fb: FormBuilder, private cdr: ChangeDetectorRef) { }
   
   ngOnInit() { 
     this.form = this.fb.group({ nombre: ['', Validators.required], descripcion: [''] }); 
@@ -41,7 +41,8 @@ export class Categorias implements OnInit {
         this.categorias = r?.data || []; 
         this.loading = false; 
       }, 
-      error: () => this.loading = false }); 
+      error: () => this.loading = false });
+      this.cdr.detectChanges(); 
   }
 
   nuevo() { 
@@ -71,13 +72,15 @@ export class Categorias implements OnInit {
       this.success = this.editando ? 'Categoría actualizada.' : 'Categoría creada.'; 
       this.showModal = false; 
       this.ngOnInit(); 
+      this.cdr.detectChanges();
     } else 
       this.error = r?.message || 'Error'; 
       this.saving = false; 
     }, 
     error: (e: any) => { 
       this.error = e?.message || 'Error'; 
-      this.saving = false; 
+      this.saving = false;
+      this.cdr.detectChanges();
     } });
   }
 

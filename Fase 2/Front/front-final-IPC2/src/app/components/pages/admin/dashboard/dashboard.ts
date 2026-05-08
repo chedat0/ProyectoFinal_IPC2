@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Layout } from '../../../shared/layout/layout';
@@ -28,7 +28,7 @@ export class Dashboard implements OnInit {
   comision: any = null;
   loading = true;
 
-  constructor(private service: AdminServicio) { }
+  constructor(private service: AdminServicio, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
     Promise.all([
@@ -38,6 +38,7 @@ export class Dashboard implements OnInit {
         this.stats.saldoGlobal = s?.data || 0;
         this.comision = c?.data;
         this.loading = false;
+        this.cdr.detectChanges();
       }).catch(() => this.loading = false);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule,  } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -32,7 +32,7 @@ export class Comision implements OnInit {
   success= '';
   form!: FormGroup;
 
-  constructor(private service:AdminServicio, private fb:FormBuilder){}
+  constructor(private service:AdminServicio, private fb:FormBuilder, private cdr: ChangeDetectorRef){}
 
   ngOnInit(){
     this.form=this.fb.group({porcentaje:['',[ Validators.required,Validators.min(0), Validators.max(100)]]});
@@ -45,6 +45,7 @@ export class Comision implements OnInit {
       }
       this.historial= h ?.data || [];
       this.loading= false; 
+      this.cdr.detectChanges;
     }).catch(()=>this.loading= false);
   }
 
@@ -63,7 +64,7 @@ export class Comision implements OnInit {
     error:(e:any)=>{
       this.error=e?.message||'Error';
       this.saving=false;
-    
+      this.cdr.detectChanges();
     }});
   }
 

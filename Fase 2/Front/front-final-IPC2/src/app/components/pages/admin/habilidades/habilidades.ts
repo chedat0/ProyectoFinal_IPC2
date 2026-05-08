@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -35,7 +35,7 @@ export class Habilidades implements OnInit{
   saving= false; 
   filtroCategoria= '';
 
-  constructor(private service:AdminServicio,private fb:FormBuilder) { }
+  constructor(private service:AdminServicio,private fb:FormBuilder, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(){
     this.form=this.fb.group({
@@ -50,6 +50,7 @@ export class Habilidades implements OnInit{
         this.habilidades=h?.data||[];
         this.categorias=c?.data||[];
         this.loading=false; 
+        this.cdr.detectChanges();
       }).catch(()=>this.loading= false);
   }
 
@@ -94,9 +95,11 @@ export class Habilidades implements OnInit{
     } else 
       this.error=r?.message||'Error';
       this.saving=false;
+      this.cdr.detectChanges();
     },
     error:(e:any)=>{this.error=e?.message||'Error';
       this.saving=false;
+      this.cdr.detectChanges();
     }});
   }
 
