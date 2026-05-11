@@ -1,10 +1,6 @@
 CREATE DATABASE proyfinal_IPC2;
 USE proyfinal_IPC2;
 
-SET FOREIGN_KEY_CHECKS = 0;
--- ============================================================
--- 01. USUARIO
--- ============================================================
 CREATE TABLE usuario (
     id               INT UNSIGNED    NOT NULL AUTO_INCREMENT,
     nombre_completo  VARCHAR(150)    NOT NULL,
@@ -23,11 +19,8 @@ CREATE TABLE usuario (
     CONSTRAINT uq_usuario_username  UNIQUE (username),
     CONSTRAINT uq_usuario_correo    UNIQUE (correo),
     CONSTRAINT uq_usuario_cui       UNIQUE (cui)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 02. CLIENTE
--- ============================================================
 CREATE TABLE cliente (
     id               INT UNSIGNED    NOT NULL AUTO_INCREMENT,
     usuario_id       INT UNSIGNED    NOT NULL,
@@ -40,11 +33,13 @@ CREATE TABLE cliente (
     CONSTRAINT pk_cliente           PRIMARY KEY (id),
     CONSTRAINT uq_cliente_usuario   UNIQUE      (usuario_id),
     CONSTRAINT fk_cliente_usuario   FOREIGN KEY (usuario_id) REFERENCES usuario(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 03. FREELANCER
--- ============================================================
+ ALTER TABLE cliente
+    ADD COLUMN nombre_empresa VARCHAR(200) NULL AFTER descripcion,
+    ADD COLUMN pais           VARCHAR(100) NULL DEFAULT 'Guatemala' AFTER sitio_web;
+    
+
 CREATE TABLE freelancer (
     id                    INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     usuario_id            INT UNSIGNED  NOT NULL,
@@ -58,22 +53,23 @@ CREATE TABLE freelancer (
     CONSTRAINT pk_freelancer          PRIMARY KEY (id),
     CONSTRAINT uq_freelancer_usuario  UNIQUE      (usuario_id),
     CONSTRAINT fk_freelancer_usuario  FOREIGN KEY (usuario_id) REFERENCES usuario(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ;
  
--- ============================================================
--- 04. ADMINISTRADOR
--- ============================================================
+ ALTER TABLE freelancer
+    ADD COLUMN especialidad    VARCHAR(200) NULL AFTER descripcion,
+    ADD COLUMN portafolio_url  VARCHAR(500) NULL AFTER tarifa_hora,
+    ADD COLUMN pais_residencia VARCHAR(100) NULL DEFAULT 'Guatemala' AFTER portafolio_url;
+
 CREATE TABLE administrador (
     id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
     usuario_id INT UNSIGNED NOT NULL,
     CONSTRAINT pk_administrador         PRIMARY KEY (id),
     CONSTRAINT uq_administrador_usuario UNIQUE      (usuario_id),
     CONSTRAINT fk_administrador_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 05. CATEGORIA
--- ============================================================
+ ALTER TABLE administrador ADD COLUMN nivel_acceso VARCHAR(50) NOT NULL DEFAULT 'ESTANDAR';
+
 CREATE TABLE categoria (
     id             INT UNSIGNED NOT NULL AUTO_INCREMENT,
     nombre         VARCHAR(100) NOT NULL,
@@ -82,11 +78,8 @@ CREATE TABLE categoria (
     fecha_creacion DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_categoria        PRIMARY KEY (id),
     CONSTRAINT uq_categoria_nombre UNIQUE      (nombre)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ;
  
--- ============================================================
--- 06. HABILIDAD
--- ============================================================
 CREATE TABLE habilidad (
     id             INT UNSIGNED NOT NULL AUTO_INCREMENT,
     categoria_id   INT UNSIGNED NOT NULL,
@@ -96,11 +89,8 @@ CREATE TABLE habilidad (
     fecha_creacion DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT pk_habilidad           PRIMARY KEY (id),
     CONSTRAINT fk_habilidad_categoria FOREIGN KEY (categoria_id) REFERENCES categoria(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ;
  
--- ============================================================
--- 07. PROYECTO
--- ============================================================
 CREATE TABLE proyecto (
     id                  INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     cliente_id          INT UNSIGNED  NOT NULL,
@@ -116,11 +106,8 @@ CREATE TABLE proyecto (
     CONSTRAINT pk_proyecto       PRIMARY KEY (id),
     CONSTRAINT fk_proy_cliente   FOREIGN KEY (cliente_id)   REFERENCES cliente(id),
     CONSTRAINT fk_proy_categoria FOREIGN KEY (categoria_id) REFERENCES categoria(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ;
  
--- ============================================================
--- 08. PROPUESTA
--- ============================================================
 CREATE TABLE propuesta (
     id                 INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     proyecto_id        INT UNSIGNED  NOT NULL,
@@ -138,11 +125,8 @@ CREATE TABLE propuesta (
     CONSTRAINT fk_prop_freelancer FOREIGN KEY (freelancer_id) REFERENCES freelancer(id),
     CONSTRAINT ck_prop_monto      CHECK       (monto_ofertado > 0),
     CONSTRAINT ck_prop_plazo      CHECK       (plazo_dias > 0)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 09. CONTRATO
--- ============================================================
 CREATE TABLE contrato (
     id                  INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     propuesta_id        INT UNSIGNED  NOT NULL,
@@ -163,11 +147,8 @@ CREATE TABLE contrato (
     CONSTRAINT fk_cont_proyecto      FOREIGN KEY (proyecto_id)   REFERENCES proyecto(id),
     CONSTRAINT fk_cont_cliente       FOREIGN KEY (cliente_id)    REFERENCES cliente(id),
     CONSTRAINT fk_cont_freelancer    FOREIGN KEY (freelancer_id) REFERENCES freelancer(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 10. ENTREGA
--- ============================================================
 CREATE TABLE entrega (
     id             INT UNSIGNED NOT NULL AUTO_INCREMENT,
     contrato_id    INT UNSIGNED NOT NULL,
@@ -178,11 +159,8 @@ CREATE TABLE entrega (
     fecha_revision DATETIME         NULL,
     CONSTRAINT pk_entrega       PRIMARY KEY (id),
     CONSTRAINT fk_entr_contrato FOREIGN KEY (contrato_id) REFERENCES contrato(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 11. ENTREGA_ARCHIVO
--- ============================================================
 CREATE TABLE entrega_archivo (
     id             INT UNSIGNED NOT NULL AUTO_INCREMENT,
     entrega_id     INT UNSIGNED NOT NULL,
@@ -190,11 +168,8 @@ CREATE TABLE entrega_archivo (
     nombre_archivo VARCHAR(200) NOT NULL,
     CONSTRAINT pk_entrega_archivo PRIMARY KEY (id),
     CONSTRAINT fk_earc_entrega    FOREIGN KEY (entrega_id) REFERENCES entrega(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 12. CALIFICACION
--- ============================================================
 CREATE TABLE calificacion (
     id            INT UNSIGNED     NOT NULL AUTO_INCREMENT,
     contrato_id   INT UNSIGNED     NOT NULL,
@@ -209,11 +184,8 @@ CREATE TABLE calificacion (
     CONSTRAINT fk_calif_contrato   FOREIGN KEY (contrato_id)   REFERENCES contrato(id),
     CONSTRAINT fk_calif_cliente    FOREIGN KEY (cliente_id)    REFERENCES cliente(id),
     CONSTRAINT fk_calif_freelancer FOREIGN KEY (freelancer_id) REFERENCES freelancer(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 13. RECARGA_SALDO
--- ============================================================
 CREATE TABLE recarga_saldo (
     id          INT UNSIGNED  NOT NULL AUTO_INCREMENT,
     cliente_id  INT UNSIGNED  NOT NULL,
@@ -223,11 +195,13 @@ CREATE TABLE recarga_saldo (
     CONSTRAINT pk_recarga_saldo PRIMARY KEY (id),
     CONSTRAINT ck_recarga_monto CHECK       (monto > 0),
     CONSTRAINT fk_rec_cliente   FOREIGN KEY (cliente_id) REFERENCES cliente(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 14. CONFIGURACION_COMISION
--- ============================================================
+ALTER TABLE recarga_saldo
+    ADD COLUMN metodo_pago ENUM('TRANSFERENCIA','DEPOSITO','TARJETA','EFECTIVO')
+                           NOT NULL DEFAULT 'TRANSFERENCIA' AFTER monto,
+    ADD COLUMN referencia  VARCHAR(200) NULL AFTER metodo_pago;
+
 CREATE TABLE configuracion_comision (
     id           INT UNSIGNED NOT NULL AUTO_INCREMENT,
     admin_id     INT UNSIGNED NOT NULL,
@@ -238,33 +212,24 @@ CREATE TABLE configuracion_comision (
     CONSTRAINT pk_configuracion_comision PRIMARY KEY (id),
     CONSTRAINT ck_com_porcentaje         CHECK       (porcentaje BETWEEN 0.00 AND 100.00),
     CONSTRAINT fk_com_admin              FOREIGN KEY (admin_id) REFERENCES administrador(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 15. FREELANCER_HABILIDAD (M:N)
--- ============================================================
 CREATE TABLE freelancer_habilidad (
     freelancer_id INT UNSIGNED NOT NULL,
     habilidad_id  INT UNSIGNED NOT NULL,
     CONSTRAINT pk_freelancer_habilidad PRIMARY KEY (freelancer_id, habilidad_id),
     CONSTRAINT fk_freh_freelancer      FOREIGN KEY (freelancer_id) REFERENCES freelancer(id),
     CONSTRAINT fk_freh_habilidad       FOREIGN KEY (habilidad_id)  REFERENCES habilidad(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 16. PROYECTO_HABILIDAD (M:N)
--- ============================================================
 CREATE TABLE proyecto_habilidad (
     proyecto_id  INT UNSIGNED NOT NULL,
     habilidad_id INT UNSIGNED NOT NULL,
     CONSTRAINT pk_proyecto_habilidad PRIMARY KEY (proyecto_id, habilidad_id),
     CONSTRAINT fk_proyh_proyecto     FOREIGN KEY (proyecto_id)  REFERENCES proyecto(id),
     CONSTRAINT fk_proyh_habilidad    FOREIGN KEY (habilidad_id) REFERENCES habilidad(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+);
  
--- ============================================================
--- 17. SOLICITUD_HABILIDAD
--- ============================================================
 CREATE TABLE solicitud_habilidad (
     id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
     freelancer_id   INT UNSIGNED NOT NULL,
@@ -277,11 +242,8 @@ CREATE TABLE solicitud_habilidad (
     CONSTRAINT pk_solicitud_habilidad PRIMARY KEY (id),
     CONSTRAINT fk_solhab_freelancer   FOREIGN KEY (freelancer_id) REFERENCES freelancer(id),
     CONSTRAINT fk_solhab_admin        FOREIGN KEY (admin_id)      REFERENCES administrador(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+) ;
  
--- ============================================================
--- 18. SOLICITUD_CATEGORIA
--- ============================================================
 CREATE TABLE solicitud_categoria (
     id              INT UNSIGNED NOT NULL AUTO_INCREMENT,
     cliente_id      INT UNSIGNED NOT NULL,
@@ -294,6 +256,50 @@ CREATE TABLE solicitud_categoria (
     CONSTRAINT pk_solicitud_categoria PRIMARY KEY (id),
     CONSTRAINT fk_solcat_cliente      FOREIGN KEY (cliente_id) REFERENCES cliente(id),
     CONSTRAINT fk_solcat_admin        FOREIGN KEY (admin_id)   REFERENCES administrador(id)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
- 
-SET FOREIGN_KEY_CHECKS = 1;
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+INSERT INTO usuario (nombre_completo, username, correo, password_hash, telefono, direccion, cui, fecha_nacimiento, tipo_usuario, activo)
+VALUES (
+    'Joshua Cajas',
+    'admin',
+    'admin@connectwork.com',
+    '$2a$12$PBwRH4kA/hVUL8/1iZhf2uzDPeeoQM0P6JIm.W9VPrcNWtpqLf1qC',
+    '2000-1234',
+    'Xela',
+    '1234567891112',
+    '1990-01-01',
+    'ADMINISTRADOR',
+    TRUE
+);
+
+SET @admin_usuario_id = (SELECT id FROM usuario WHERE correo = 'admin@connectwork.com');
+INSERT INTO administrador (usuario_id) VALUES (@admin_usuario_id);
+SET @admin_id = (SELECT id FROM administrador WHERE usuario_id = @admin_usuario_id);
+
+INSERT INTO configuracion_comision (admin_id, porcentaje, activa)
+VALUES (@admin_id, 10.00, TRUE);
+
+INSERT INTO categoria (nombre, descripcion, activa) VALUES
+('Desarrollo Web', 'Proyectos de desarrollo web para empresas', TRUE),
+('Redaccion', 'Creación de contenido original, traducción, redacción', TRUE),
+('Marketing', 'redes sociales y estrategias digitales para pequeñas y medianas empresas', TRUE),
+('Consultoria', 'Asesorías empresariales, legales y financieras', TRUE);
+
+SELECT id, nombre, activa, fecha_creacion FROM habilidad;

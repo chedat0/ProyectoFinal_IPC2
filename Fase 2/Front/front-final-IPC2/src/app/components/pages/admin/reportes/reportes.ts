@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Layout } from '../../../shared/layout/layout';
 import { AdminServicio } from '../../../../servicios/admin.servicio';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const NAV = [
   { label:'Dashboard',   icon:'📊', path:'/admin/dashboard'   },
@@ -85,5 +87,56 @@ export class Reportes implements OnInit {
     this.cargar();
   }
 
-  exportarPDF() { window.print(); }
+  
+  exportarPDF() {
+    const doc = new jsPDF();
+    const now = this.dp.transform(this.today, "dd/MM/yyyy HH:mm") ?? "";
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text("ConnectWork — Administracion", 14, 18);
+    doc.setFontSize(13);
+    doc.setFont("helvetica", "normal");
+    doc.text(this.tabLabel, 14, 27);
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(this.periodoLabel, 14, 34);
+    doc.text("Generado el " + now, 14, 40);
+    doc.setTextColor(0);
+    if (this.tab === "ingresos") {
+      autoTable(doc, {
+        startY: 48,
+        head: [["Metrica", "Valor"]],
+        body: [
+          ["Contratos completados", String(this.datos?.contratos_completados ?? 0)],
+          ["Comisiones cobradas",   "Q" + (this.datos?.total_comisiones ?? 0).toFixed(2)],
+        ],
+        styles: { fontSize: 11 },
+        headStyles: { fillColor: [180, 90, 60] },
+      });
+    } else if (this.tab === "freelancers") {
+      autoTable(doc, {
+        startY: 48,
+        head: [["#", "Freelancer", "Contratos", "Total generado", "Comision plataforma"]],
+        body: this.asArray().map((d: any, i: number) => [
+          i + 1, d.nombre_completo, d.contratos,
+          "Q" + Number(d.total_generado).toFixed(2),
+          "Q" + Number(d.comision_plataforma).toFixed(2),
+        ]),
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [180, 90, 60] },
+      });
+    } else {
+      autoTable(doc, {
+        startY: 48,
+        head: [["#", "Categoria", "Contratos", "Total comisiones"]],
+        body: this.asArray().map((d: any, i: number) => [
+          i + 1, d.nombre, d.contratos,
+          "Q" + Number(d.total_comisiones).toFixed(2),
+        ]),
+        styles: { fontSize: 10 },
+        headStyles: { fillColor: [180, 90, 60] },
+      });
+    }
+    doc.save("reporte-admin-" + this.tab + "-" + Date.now() + ".pdf");
+  }
 }

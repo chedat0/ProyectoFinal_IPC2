@@ -193,7 +193,7 @@ public class FreelancerServlet extends HttpServlet {
                 propuesta.setFreelancerId(f.getId());
                 propuesta.setMontoOfertado(json.get("montoOfertado").getAsDouble());
                 propuesta.setPlazoDias(json.get("tiempoEntregaDias").getAsInt());
-                propuesta.setCartaPresentacion(json.has("mensaje") ? json.get("mensaje").getAsString() : null);
+                propuesta.setCartaPresentacion(json.has("cartaPresentacion") ? json.get("cartaPresentacion").getAsString() : null);
 
                 Propuesta creada = propuestaDAO.ingresar(propuesta);
                 RespuestasServlet.created(resp, gson.toJsonTree(creada));

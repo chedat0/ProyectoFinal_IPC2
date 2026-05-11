@@ -11,6 +11,11 @@ export class AdminServicio {
     getUsuarios(): Observable<any> { return this.http.get(`${this.url}/usuarios`); }
     toggleUsuario(id: number): Observable<any> { return this.http.put(`${this.url}/usuarios/${id}/toggle`, {}); }
 
+    getAdministradores(): Observable<any> { return this.http.get(`${this.url}/administradores`); }
+    actualizarAdministrador(usuarioId: number, data: any): Observable<any> {
+        return this.http.put(`${this.url}/administradores/${usuarioId}`, data);
+    }
+    
     getCategorias(): Observable<any> { return this.http.get(`${this.url}/categorias`); }
     crearCategoria(data: any): Observable<any> { return this.http.post(`${this.url}/categorias`, data); }
     actualizarCategoria(id: number, data: any): Observable<any> { return this.http.put(`${this.url}/categorias/${id}`, data); }

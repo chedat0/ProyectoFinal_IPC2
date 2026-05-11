@@ -17,3 +17,8 @@
         border-color: var(--terracota)
     }
 }
+
+.badge-info {
+    background: #dbeafe;
+    color: #1e40af;
+}

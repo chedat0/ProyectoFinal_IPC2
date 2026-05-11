@@ -73,7 +73,11 @@ public class AdminServlet extends HttpServlet {
         }
 
         try {
-            if (path.equals("/usuarios")) {
+            if (path.equals("/administradores")) {
+                List<Administrador> admins = adminDAO.obtenerTodos();
+                RespuestasServlet.ok(resp, gson.toJsonTree(admins));
+
+            } else if (path.equals("/usuarios")) {
                 String tipo = req.getParameter("tipo");
                 List<Usuario> usuarios = usuarioDAO.obtenerTodos(tipo);
                 RespuestasServlet.ok(resp, gson.toJsonTree(usuarios));
@@ -233,7 +237,21 @@ public class AdminServlet extends HttpServlet {
             String body = req.getReader().lines().collect(Collectors.joining());
             JsonObject json = body.isEmpty() ? new JsonObject() : JsonParser.parseString(body).getAsJsonObject();
 
-            if (path.matches("/categorias/\\d+$")) {
+            
+            if (path.matches("/administradores/\\d+")) {
+                int usuarioId = Integer.parseInt(path.split("/")[2]);
+                String nombreCompleto = json.has("nombre_completo") ? json.get("nombre_completo").getAsString() : null;
+                String correo         = json.has("correo")          ? json.get("correo").getAsString()          : null;
+                String telefono       = json.has("telefono")        ? json.get("telefono").getAsString()        : null;
+                String nivelAcceso    = json.has("nivelAcceso")     ? json.get("nivelAcceso").getAsString()     : "ESTANDAR";
+                String passwordHash   = null;
+                if (json.has("password") && !json.get("password").getAsString().isEmpty()) {
+                    passwordHash = BCrypt.hashpw(json.get("password").getAsString(), BCrypt.gensalt(12));
+                }
+                adminDAO.actualizarAdmin(usuarioId, nombreCompleto, correo, telefono, nivelAcceso, passwordHash);
+                RespuestasServlet.ok(resp, "Administrador actualizado");
+
+            } else if (path.matches("/categorias/\\d+$")) {
                 int id = Integer.parseInt(path.split("/")[2]);
                 Categoria cat = categoriaDAO.obtenerPorId(id);
                 if (cat == null) {

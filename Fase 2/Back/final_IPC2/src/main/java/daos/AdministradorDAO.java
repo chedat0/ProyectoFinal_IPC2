@@ -30,6 +30,42 @@ public class AdministradorDAO {
         }
         return null;
     }
+    
+    public java.util.List<Administrador> obtenerTodos() throws SQLException {
+        String sql = "SELECT a.*, u.username, u.nombre_completo, u.correo FROM administrador a " +
+                     "JOIN usuario u ON a.usuario_id = u.id ORDER BY a.id";
+        java.util.List<Administrador> list = new java.util.ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) list.add(mapRow(rs));
+        }
+        return list;
+    }
+
+    public void actualizarAdmin(int usuarioId, String nombreCompleto, String correo,
+                                String telefono, String nivelAcceso, String passwordHash) throws SQLException {       
+        StringBuilder sql = new StringBuilder("UPDATE usuario SET nombre_completo=?, correo=?, telefono=?");
+        if (passwordHash != null) sql.append(", password_hash=?");
+        sql.append(" WHERE id=?");
+        try (PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            ps.setString(1, nombreCompleto);
+            ps.setString(2, correo);
+            ps.setString(3, telefono);
+            if (passwordHash != null) {
+                ps.setString(4, passwordHash);
+                ps.setInt(5, usuarioId);
+            } else {
+                ps.setInt(4, usuarioId);
+            }
+            ps.executeUpdate();
+        }    
+        String sqlAdmin = "UPDATE administrador SET nivel_acceso=? WHERE usuario_id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sqlAdmin)) {
+            ps.setString(1, nivelAcceso);
+            ps.setInt(2, usuarioId);
+            ps.executeUpdate();
+        }
+    }
 
     public Administrador ingresar(int usuarioId, String nivelAcceso) throws SQLException {
         String sql = "INSERT INTO administrador (usuario_id, nivel_acceso) VALUES (?, ?)";
