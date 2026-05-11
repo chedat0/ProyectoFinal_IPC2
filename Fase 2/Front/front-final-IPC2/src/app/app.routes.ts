@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
+import { PerfilGuard } from './guards/perfil.guard';
 
 export const routes: Routes = [
     {
@@ -28,7 +29,7 @@ export const routes: Routes = [
 
     // Cliente 
     {
-        path: 'cliente/dashboard', canActivate: [AuthGuard, RoleGuard], data: { role: 'CLIENTE' },
+        path: 'cliente/dashboard', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'CLIENTE' },
         loadComponent: () => import('./components/pages/clientes/dashboard/dashboard').then(m => m.Dashboard)
     },
     {
@@ -36,29 +37,29 @@ export const routes: Routes = [
         loadComponent: () => import('./components/pages/clientes/perfil/perfil').then(m => m.Perfil)
     },
     {
-        path: 'cliente/proyectos', canActivate: [AuthGuard, RoleGuard], data: { role: 'CLIENTE' },
+        path: 'cliente/proyectos', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'CLIENTE' },
         loadComponent: () => import('./components/pages/clientes/proyectos/proyectos').then(m => m.Proyectos)
     },
     {
-        path: 'cliente/proyectos/:id/propuestas', canActivate: [AuthGuard, RoleGuard], data: { role: 'CLIENTE' },
+        path: 'cliente/proyectos/:id/propuestas', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'CLIENTE' },
         loadComponent: () => import('./components/pages/clientes/propuestas/propuestas').then(m => m.Propuestas)
     },
     {
-        path: 'cliente/contratos', canActivate: [AuthGuard, RoleGuard], data: { role: 'CLIENTE' },
+        path: 'cliente/contratos', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'CLIENTE' },
         loadComponent: () => import('./components/pages/clientes/contratos/contratos').then(m => m.Contratos)
     },
     {
-        path: 'cliente/recargas', canActivate: [AuthGuard, RoleGuard], data: { role: 'CLIENTE' },
+        path: 'cliente/recargas', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'CLIENTE' },
         loadComponent: () => import('./components/pages/clientes/recargas/recargas').then(m => m.Recargas)
     },
     {
-        path: 'cliente/reportes', canActivate: [AuthGuard, RoleGuard], data: { role: 'CLIENTE' },
+        path: 'cliente/reportes', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'CLIENTE' },
         loadComponent: () => import('./components/pages/clientes/reportes/reportes').then(m => m.Reportes)
     },
 
     // Freelancer
     {
-        path: 'freelancer/dashboard', canActivate: [AuthGuard, RoleGuard], data: { role: 'FREELANCER' },
+        path: 'freelancer/dashboard', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'FREELANCER' },
         loadComponent: () => import('./components/pages/freelancer/dashboard/dashboard').then(m => m.Dashboard)
     },
     {
@@ -66,19 +67,19 @@ export const routes: Routes = [
         loadComponent: () => import('./components/pages/freelancer/perfil/perfil').then(m => m.Perfil)
     },
     {
-        path: 'freelancer/explorar', canActivate: [AuthGuard, RoleGuard], data: { role: 'FREELANCER' },
+        path: 'freelancer/explorar', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'FREELANCER' },
         loadComponent: () => import('./components/pages/freelancer/explorar/explorar').then(m => m.Explorar)
     },
     {
-        path: 'freelancer/propuestas', canActivate: [AuthGuard, RoleGuard], data: { role: 'FREELANCER' },
+        path: 'freelancer/propuestas', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'FREELANCER' },
         loadComponent: () => import('./components/pages/freelancer/propuestas/propuestas').then(m => m.Propuestas)
     },
     {
-        path: 'freelancer/contratos', canActivate: [AuthGuard, RoleGuard], data: { role: 'FREELANCER' },
+        path: 'freelancer/contratos', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'FREELANCER' },
         loadComponent: () => import('./components/pages/freelancer/contratos/contratos').then(m => m.Contratos)
     },
     {
-        path: 'freelancer/reportes', canActivate: [AuthGuard, RoleGuard], data: { role: 'FREELANCER' },
+        path: 'freelancer/reportes', canActivate: [AuthGuard, RoleGuard, PerfilGuard], data: { role: 'FREELANCER' },
         loadComponent: () => import('./components/pages/freelancer/reportes/reportes').then(m => m.Reportes)
     },
 

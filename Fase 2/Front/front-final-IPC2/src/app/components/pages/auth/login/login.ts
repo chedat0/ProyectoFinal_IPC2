@@ -31,12 +31,11 @@ export class Login {
     const { username, password } = this.form.value;
     this.auth.login(username, password).subscribe({
       next: (res: any) => {
-        this.loading = false;        
-        const rol = res?.tipoUsuario || res?.data?.tipoUsuario || res?.rol;
-        if (rol === 'CLIENTE') this.router.navigate(['/cliente/dashboard']);
-        else if (rol === 'FREELANCER') this.router.navigate(['/freelancer/dashboard']);
-        else if (rol === 'ADMINISTRADOR') this.router.navigate(['/admin/dashboard']);
-        else this.error = 'Rol no reconocido: ' + JSON.stringify(rol);
+        this.loading = false;               
+        const data = res?.data || res;
+        const rol            = data?.tipoUsuario || data?.rol;
+        const perfilCompleto = data?.perfilCompleto ?? true;
+        this.auth.navigateAfterAuth(rol, perfilCompleto);
         this.cdr.detectChanges();
       },
       error: (e: any) => {

@@ -1,6 +1,209 @@
+.perfil-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.perfil-card-sm {
+    background: var(--blanco);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 1.75rem 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .6rem;
+}
+
+
+.perfil-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--pizarra);
+}
+
+.perfil-role {
+    font-size: .9rem;
+    color: var(--terracota);
+    font-weight: 600;
+}
+
+.perfil-meta {
+    font-size: .85rem;
+    color: #888;
+}
+
+.nivel-badge {
+    display: inline-block;
+    padding: .2rem .75rem;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.nivel-junior {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.nivel-semi_senior {
+    background: #fef9c3;
+    color: #854d0e;
+}
+
+.nivel-senior {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.stats-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin-top: .5rem;
+}
+
+.stat-box {
+    flex: 1;
+    background: var(--crema);
+    border-radius: var(--radius-sm);
+    padding: .75rem .5rem;
+    text-align: center;
+}
+
+.stat-val {
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--pizarra);
+}
+
+.stat-label {
+    font-size: .72rem;
+    color: #888;
+    margin-top: .15rem;
+}
+
+.saldo-box {
+    width: 100%;
+    background: linear-gradient(135deg, var(--pizarra), #22282F);
+    border-radius: var(--radius-sm);
+    padding: .85rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: .5rem;
+}
+
+.saldo-label {
+    font-size: .8rem;
+    color: rgba(255, 255, 255, .7);
+}
+
+.saldo-val {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.perfil-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.perfil-card-block {
+    background: var(--blanco);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+}
+
+.block-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--terracota);
+    margin-bottom: .75rem;
+}
+
+.perfil-desc {
+    font-size: .95rem;
+    color: #555;
+    line-height: 1.7;
+}
+
+.portafolio-link {
+    font-size: .9rem;
+    word-break: break-all;
+}
+
 .chips-wrap {
     display: flex;
     flex-wrap: wrap;
     gap: .4rem;
-    margin-top: .4rem
+}
+
+
+.perfil-card-edit {
+    background: var(--blanco);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    max-width: 800px;
+}
+
+.edit-section-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--terracota);
+    margin-bottom: 1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.habs-hint {
+    font-size: .85rem;
+    color: #777;
+    margin-bottom: .75rem;
+}
+
+.link-btn {
+    background: none;
+    border: none;
+    color: var(--terracota);
+    cursor: pointer;
+    font-size: .85rem;
+    font-weight: 600;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.form-actions {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 700px) {
+    .perfil-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
 }

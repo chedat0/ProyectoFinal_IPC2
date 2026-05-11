@@ -12,10 +12,9 @@ import { Footer } from "../../shared/footer/footer";
 export class Landing {
   features = [
     { icon: '🔍', title: 'Encuentra talento', desc: 'Publica tu proyecto y recibe propuestas de freelancers calificados en Guatemala.' },
-    { icon: '🤝', title: 'Contrata con confianza', desc: 'Sistema de contratos, entregas y pagos seguros integrado en la plataforma.' },
-    { icon: '💳', title: 'Pagos protegidos', desc: 'El pago se libera al freelancer solo cuando apruebas la entrega del trabajo.' },
+    { icon: '🤝', title: 'Contrata con confianza', desc: 'Sistema de contratos, entregas y pagos seguros integrado en la plataforma.' },    
     { icon: '⭐', title: 'Calificaciones reales', desc: 'Sistema de reseñas para que encuentres siempre al mejor profesional.' },
-    { icon: '📊', title: 'Reportes y estadísticas', desc: 'Visualiza el historial de proyectos, gastos y rendimiento de tu negocio.' },
+    { icon: '📊', title: 'Reportes y estadísticas', desc: 'Visualiza el historial de proyectos Y gastos' },
     { icon: '🛡️', title: 'Plataforma segura', desc: 'Autenticación por roles, datos protegidos y comisiones transparentes.' },
   ];
 

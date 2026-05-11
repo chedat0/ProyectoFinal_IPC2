@@ -1,3 +1,116 @@
-.form-wrap {
-    max-width: 700px
+.perfil-card {
+    background: var(--blanco);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    max-width: 760px;
+}
+
+.perfil-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.perfil-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--terracota), var(--pizarra));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.perfil-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--pizarra);
+    margin-bottom: .25rem;
+}
+
+.perfil-sub {
+    font-size: .9rem;
+    color: #777;
+    line-height: 1.6;
+}
+
+.perfil-section {
+    margin-bottom: 1.5rem;
+}
+
+.perfil-section-label {
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--terracota);
+    margin-bottom: 1rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+.info-label {
+    font-size: .75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #999;
+}
+
+.info-value {
+    font-size: .95rem;
+    color: var(--carbon);
+    font-weight: 500;
+}
+
+.info-desc {
+    line-height: 1.6;
+    color: #555;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: .75rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+}
+
+@media (max-width: 600px) {
+
+    .info-grid,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .perfil-header {
+        flex-direction: column;
+        text-align: center;
+    }
 }

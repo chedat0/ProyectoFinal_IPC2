@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { Layout } from '../../../shared/layout/layout';
 import { FreelancerServicio } from '../../../../servicios/freelancer.servicio';
 import { CatalogoServicio } from '../../../../servicios/catalogo.servicio';
+import { AuthServicio } from '../../../../servicios/auth.servicio';
 
 const NAV = [
   { label: 'Dashboard', icon: '📊', path: '/freelancer/dashboard' },
@@ -34,7 +35,13 @@ export class Perfil implements OnInit {
   error = '';
   success = '';
 
-  constructor(private service: FreelancerServicio, private catalogo: CatalogoServicio, private fb: FormBuilder, private cdr: ChangeDetectorRef) { }
+  showSolModal = false;
+  solForm!: FormGroup;
+  solSaving = false;
+  solSuccess = '';
+  solError = '';
+
+  constructor(private service: FreelancerServicio, private catalogo: CatalogoServicio, private fb: FormBuilder, private cdr: ChangeDetectorRef, private auth: AuthServicio) { }
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -43,97 +50,78 @@ export class Perfil implements OnInit {
       nivelExperiencia: [''],
       tarifaHora: ['', Validators.required],
       portafolioUrl: [''],
-      paisResidencia: ['Guatemala']
+      paisResidencia: ['Guatemala'],
     });
-    Promise.all([
-      this.service.getPerfil().toPromise(),
-      this.catalogo.getHabilidades().toPromise()
-    ])
+    this.solForm = this.fb.group({ nombre: ['', Validators.required], descripcion: [''] });
+    Promise.all([this.service.getPerfil().toPromise(), this.catalogo.getHabilidades().toPromise()])
       .then(([p, h]: any[]) => {
         this.habilidades = h?.data || [];
         if (p?.data) {
           this.perfilData = p.data;
           this.form.patchValue({
-            especialidad: p.data.especialidad || '',
-            descripcion: p.data.descripcion || '',
-            nivelExperiencia: p.data.nivelExperiencia || '',
-            tarifaHora: p.data.tarifaHora || '',
-            portafolioUrl: p.data.portafolioUrl || '',
-            paisResidencia: p.data.paisResidencia || 'Guatemala' });
+            especialidad: p.data.especialidad || '', descripcion: p.data.descripcion || '',
+            nivelExperiencia: p.data.nivelExperiencia || '', tarifaHora: p.data.tarifaHora || '',
+            portafolioUrl: p.data.portafolioUrl || '', paisResidencia: p.data.paisResidencia || 'Guatemala',
+          });
           this.selHabs = (p.data.habilidades || []).map((h: any) => h.id);
           this.editando = !p.data.especialidad;
-        } else {
-          this.editando = true;
-        }
-        this.loading = false;
-        this.cdr.detectChanges();
+        } else { this.editando = true; }
+        this.loading = false; this.cdr.detectChanges();
       }).catch(() => { this.editando = true; this.loading = false; this.cdr.detectChanges(); });
   }
 
-  toggle(id: number) {
-    const i = this.selHabs.indexOf(id);
-    i === -1 ? this.selHabs.push(id) : this.selHabs.splice(i, 1);
-  }
+  toggle(id: number) { const i = this.selHabs.indexOf(id); i === -1 ? this.selHabs.push(id) : this.selHabs.splice(i, 1); }
+  isSel(id: number) { return this.selHabs.includes(id); }
+  get f() { return this.form.controls; }
+  habNombre(id: number): string { const h = this.habilidades.find((x: any) => x.id === id); return h ? h.nombre : ''; }
+  nivelLabel(n: string): string { return ({ JUNIOR: 'Junior', SEMI_SENIOR: 'Semi Senior', SENIOR: 'Senior' } as any)[n] || n || '—'; }
 
-  isSel(id: number) {
-    return this.selHabs.includes(id);
-  }
-
-  get f() {
-    return this.form.controls;
-  }
-
-  habNombre(id: number): string {
-    const h = this.habilidades.find((x: any) => x.id === id);
-    return h ? h.nombre : '';
-  }
-
-  iniciarEdicion() {
-    this.editando = true;
-    this.error = '';
-    this.success = '';
-  }
-
+  iniciarEdicion() { this.editando = true; this.error = ''; this.success = ''; }
   cancelarEdicion() {
     if (this.perfilData) {
       this.form.patchValue({
-        especialidad: this.perfilData.especialidad || '',
-        descripcion: this.perfilData.descripcion || '',
-        nivelExperiencia: this.perfilData.nivelExperiencia || '',
-        tarifaHora: this.perfilData.tarifaHora || '',
-        portafolioUrl: this.perfilData.portafolioUrl || '',
-        paisResidencia: this.perfilData.paisResidencia || 'Guatemala'
+        especialidad: this.perfilData.especialidad || '', descripcion: this.perfilData.descripcion || '',
+        nivelExperiencia: this.perfilData.nivelExperiencia || '', tarifaHora: this.perfilData.tarifaHora || '',
+        portafolioUrl: this.perfilData.portafolioUrl || '', paisResidencia: this.perfilData.paisResidencia || 'Guatemala',
       });
       this.selHabs = (this.perfilData.habilidades || []).map((h: any) => h.id);
     }
-    this.editando = false;
-    this.error = '';
+    this.editando = false; this.error = '';
   }
 
   save() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    this.saving = true; this.error = ''; this.success = '';
+    this.service.actualizarPerfil({ ...this.form.value, habilidadIds: this.selHabs }).subscribe({
+      next: (r: any) => {
+        if (r?.success) {
+          this.success = 'Perfil actualizado correctamente.';
+          this.perfilData = r.data || { ...this.form.value, habilidades: this.habilidades.filter(h => this.selHabs.includes(h.id)) };
+          this.editando = false;
+          if (!this.perfilData?.perfilCompleto) {
+            this.auth.completarPerfil();
+          }
+        } else this.error = r?.message || 'Error al guardar';
+        this.saving = false; this.cdr.detectChanges();
+      },
+      error: (e: any) => { this.error = e?.message || 'Error'; this.saving = false; this.cdr.detectChanges(); },
+    });
+  }
 
-    this.saving = true;
-    this.error = '';
-    this.success = '';
-    const data = { ...this.form.value, habilidadIds: this.selHabs };
-    this.service.actualizarPerfil(data).subscribe({ next: (r: any) => {
-      if (r?.success) {
-        this.success = 'Perfil actualizado correctamente.';
-        this.perfilData = r.data || { ...this.form.value, habilidades: this.habilidades.filter(h => this.selHabs.includes(h.id)) };
-        this.editando = false;
-      } else {
-        this.error = r?.message || 'Error al guardar';
-      }
-      this.saving = false;
-      this.cdr.detectChanges();
-    }, error: (e: any) => {
-      this.error = e?.message || 'Error';
-      this.saving = false;
-      this.cdr.detectChanges();
-    } });
+  abrirSolicitud() { this.solForm.reset(); this.solError = ''; this.solSuccess = ''; this.showSolModal = true; }
+
+  enviarSolicitud() {
+    if (this.solForm.invalid) { this.solForm.markAllAsTouched(); return; }
+    this.solSaving = true; this.solError = '';
+    const v = this.solForm.value;
+    this.service.solicitarHabilidad({ nombre: v.nombre, descripcion: v.descripcion }).subscribe({
+      next: (r: any) => {
+        this.solSaving = false;
+        if (r?.success !== false) { this.solSuccess = 'Solicitud enviada. El administrador la revisará pronto.'; this.solForm.reset(); }
+        else this.solError = r?.message || 'Error al enviar';
+        this.cdr.detectChanges();
+      },
+      error: (e: any) => { this.solSaving = false; this.solError = e?.error?.message || e?.message || 'Error'; this.cdr.detectChanges(); },
+    });
   }
 }

@@ -34,6 +34,8 @@ public class AdminServlet extends HttpServlet {
 
     private final UsuarioDAO usuarioDAO = new UsuarioDAO();
     private final AdministradorDAO adminDAO = new AdministradorDAO();
+    private final ClienteDAO clienteDAO = new ClienteDAO();
+    private final FreelancerDAO freelancerDAO = new FreelancerDAO();
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
     private final HabilidadDAO habilidadDAO = new HabilidadDAO();
     private final SolicitudDAO solicitudDAO = new SolicitudDAO();
@@ -76,6 +78,46 @@ public class AdminServlet extends HttpServlet {
             if (path.equals("/administradores")) {
                 List<Administrador> admins = adminDAO.obtenerTodos();
                 RespuestasServlet.ok(resp, gson.toJsonTree(admins));
+
+            } else if (path.matches("/usuarios/\\d+")) {
+                int uid = Integer.parseInt(path.split("/")[2]);
+                Usuario u = usuarioDAO.obtenerPorId(uid);
+                if (u == null) { RespuestasServlet.notFound(resp, "Usuario no encontrado"); return; }
+                JsonObject res = new JsonObject();
+                res.addProperty("id",             u.getId());
+                res.addProperty("nombreCompleto", u.getNombreCompleto());
+                res.addProperty("username",       u.getUsername());
+                res.addProperty("correo",         u.getCorreo());
+                res.addProperty("telefono",       u.getTelefono());
+                res.addProperty("cui",            u.getCui());
+                res.addProperty("tipoUsuario",    u.getTipoUsuario());
+                res.addProperty("activo",         u.getActivo());
+                if ("FREELANCER".equals(u.getTipoUsuario())) {
+                    Freelancer f = freelancerDAO.obtenerPorUsuarioId(uid);
+                    if (f != null) {
+                        res.addProperty("especialidad",        f.getEspecialidad());
+                        res.addProperty("descripcion",         f.getDescripcion());
+                        res.addProperty("nivelExperiencia",    f.getNivelExperiencia());
+                        res.addProperty("tarifaHora",          f.getTarifaHora());
+                        res.addProperty("portafolioUrl",       f.getPortafolioUrl());
+                        res.addProperty("paisResidencia",      f.getPaisResidencia());
+                        res.addProperty("saldo",               f.getSaldo());
+                        res.addProperty("calificacionPromedio",f.getCalificacionPromedio());
+                        res.addProperty("totalCalificaciones", f.getTotalCalificaciones());
+                        res.add("habilidades", gson.toJsonTree(f.getHabilidades()));
+                    }
+                } else if ("CLIENTE".equals(u.getTipoUsuario())) {
+                    Cliente c = clienteDAO.obtenerPorUsuarioId(uid);
+                    if (c != null) {
+                        res.addProperty("nombreEmpresa",   c.getNombreEmpresa());
+                        res.addProperty("descripcion",     c.getDescripcion());
+                        res.addProperty("sector",          c.getSector());
+                        res.addProperty("sitioWeb",        c.getSitioWeb());
+                        res.addProperty("pais",            c.getPais());
+                        res.addProperty("saldoDisponible", c.getSaldoDisponible());
+                    }
+                }
+                RespuestasServlet.ok(resp, res);
 
             } else if (path.equals("/usuarios")) {
                 String tipo = req.getParameter("tipo");

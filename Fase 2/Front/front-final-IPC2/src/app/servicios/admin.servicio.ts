@@ -9,6 +9,7 @@ export class AdminServicio {
     constructor(private http: HttpClient) { }
 
     getUsuarios(): Observable<any> { return this.http.get(`${this.url}/usuarios`); }
+    getUsuarioPerfil(id: number): Observable<any> { return this.http.get(`${this.url}/usuarios/${id}`); }
     toggleUsuario(id: number): Observable<any> { return this.http.put(`${this.url}/usuarios/${id}/toggle`, {}); }
 
     getAdministradores(): Observable<any> { return this.http.get(`${this.url}/administradores`); }

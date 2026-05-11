@@ -85,7 +85,12 @@
                         <div class="form-group"><label>Presupuesto máximo (Q) *</label><input
                                 formControlName="presupuestoMaximo" type="number" placeholder="5000"></div>
                     </div>
-                    <div class="form-group"><label>Fecha límite</label><input formControlName="fechaLimite" type="date">
+                    <div class="form-group"><label>Fecha límite</label><input formControlName="fechaLimite" type="date"
+                            [min]="minFecha"
+                            [class.error]="form.get('fechaLimite')!.touched && form.get('fechaLimite')!.invalid">
+                        @if (form.get('fechaLimite')!.touched && form.get('fechaLimite')!.hasError('fechaPasada')) {
+                        <span class="field-error">La fecha límite debe ser hoy o posterior</span>
+                        }
                     </div>
                     <div class="form-group"><label>Habilidades requeridas</label>
                         <div class="chips-wrap">

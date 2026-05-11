@@ -1,57 +1,85 @@
 <app-layout [navItems]="nav">
     <div class="page-header">
-        <h1>Mi Perfil Profesional</h1>
-        <p>{{ editando ? 'Completa tu información para atraer más clientes' : 'Información de tu perfil' }}</p>
-    </div>
-    @if (loading) {
-    <div class="spinner-wrap">
-        <div class="spinner"></div>
-    </div>
-    }
-    @if (!loading) {
-    <div class="card" style="max-width:800px">
-        @if (error) { <div class="alert alert-error">{{ error }}</div> }
-        @if (success) { <div class="alert alert-success">{{ success }}</div> }
-
-        @if (!editando && perfilData) {
-        <!-- Modo Vista -->
-        <div class="perfil-view">
-            <div class="grid-2">
-                <div class="info-item"><label>Especialidad</label><span>{{ perfilData.especialidad || '—' }}</span></div>
-                <div class="info-item"><label>Tarifa por hora (Q)</label><span>{{ perfilData.tarifaHora || '—' }}</span></div>
+        <div class="page-header-row">
+            <div>
+                <h1>Mi Perfil Profesional</h1>
+                <p>{{ editando ? 'Completa tu información para atraer más clientes' : 'Tu tarjeta de presentación en ConnectWork' }}</p>
             </div>
-            <div class="grid-2">
-                <div class="info-item"><label>Nivel de experiencia</label><span>{{ perfilData.nivelExperiencia || '—' }}</span></div>
-                <div class="info-item"><label>País de residencia</label><span>{{ perfilData.paisResidencia || '—' }}</span></div>
+            @if (!editando && perfilData) {
+            <div style="display:flex;gap:.75rem">
+                <button class="btn btn-outline btn-sm" (click)="abrirSolicitud()">+ Solicitar Habilidad</button>
+                <button class="btn btn-primary btn-sm" (click)="iniciarEdicion()">✏️ Editar perfil</button>
             </div>
-            <div class="info-item"><label>Descripción profesional</label><span>{{ perfilData.descripcion || '—' }}</span></div>
-            <div class="info-item"><label>URL de portafolio</label>
-                @if (perfilData.portafolioUrl) {
-                <a [href]="perfilData.portafolioUrl" target="_blank">{{ perfilData.portafolioUrl }}</a>
-                } @else { <span>—</span> }
-            </div>
-            <div class="info-item"><label>Habilidades</label>
-                <div class="chips-wrap">
-                    @for (id of selHabs; track id) {
-                    <span class="chip selected">{{ habNombre(id) }}</span>
-                    }
-                    @if (selHabs.length === 0) { <span>Sin habilidades seleccionadas</span> }
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary" (click)="iniciarEdicion()">Editar perfil</button>
+            }
         </div>
-        } @else {
-        <!-- Modo Edición / Primer llenado -->
-        <form [formGroup]="form" (ngSubmit)="save()">
-            <div class="grid-2">
-                <div class="form-group"><label>Especialidad *</label><input formControlName="especialidad"
-                        placeholder="Ej: Desarrollador Full-Stack"
-                        [class.error]="f['especialidad'].touched && f['especialidad'].invalid"></div>
-                <div class="form-group"><label>Tarifa por hora (Q) *</label><input formControlName="tarifaHora"
-                        type="number" placeholder="150"
-                        [class.error]="f['tarifaHora'].touched && f['tarifaHora'].invalid"></div>
+    </div>
+
+    @if (loading) { <div class="spinner-wrap"><div class="spinner"></div></div> }
+
+    @if (!loading) {
+    @if (!editando && perfilData) {
+    <div class="perfil-layout">
+        <div class="perfil-sidebar">
+            <div class="perfil-card-sm">
+                <div class="perfil-avatar">{{ perfilData.nombreCompleto?.charAt(0) || '?' }}</div>
+                <div class="perfil-name">{{ perfilData.nombreCompleto || 'Mi perfil' }}</div>
+                @if (perfilData.especialidad) { <div class="perfil-role">{{ perfilData.especialidad }}</div> }
+                @if (perfilData.nivelExperiencia) {
+                <span class="nivel-badge nivel-{{ perfilData.nivelExperiencia?.toLowerCase() }}">{{ nivelLabel(perfilData.nivelExperiencia) }}</span>
+                }
+                @if (perfilData.paisResidencia) { <div class="perfil-meta">📍 {{ perfilData.paisResidencia }}</div> }
+                <div class="stats-row">
+                    <div class="stat-box">
+                        <div class="stat-val">Q{{ perfilData.tarifaHora | number:'1.0-0' }}</div>
+                        <div class="stat-label">Tarifa/hora</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val">⭐ {{ perfilData.calificacionPromedio | number:'1.1-1' }}</div>
+                        <div class="stat-label">{{ perfilData.totalCalificaciones }} reseñas</div>
+                    </div>
+                </div>
+                @if (perfilData.saldo != null) {
+                <div class="saldo-box">
+                    <span class="saldo-label">Saldo disponible</span>
+                    <span class="saldo-val">Q{{ perfilData.saldo | number:'1.2-2' }}</span>
+                </div>
+                }
             </div>
-            <div class="grid-2">
+        </div>
+
+        <div class="perfil-main">
+            @if (error)   { <div class="alert alert-error">{{ error }}</div> }
+            @if (success) { <div class="alert alert-success">{{ success }}</div> }
+            @if (perfilData.descripcion) {
+            <div class="perfil-card-block">
+                <div class="block-label">Sobre mí</div>
+                <p class="perfil-desc">{{ perfilData.descripcion }}</p>
+            </div>
+            }
+            @if (selHabs.length > 0) {
+            <div class="perfil-card-block">
+                <div class="block-label">Habilidades</div>
+                <div class="chips-wrap">@for (id of selHabs; track id) { <span class="chip selected">{{ habNombre(id) }}</span> }</div>
+            </div>
+            }
+            @if (perfilData.portafolioUrl) {
+            <div class="perfil-card-block">
+                <div class="block-label">Portafolio</div>
+                <a [href]="perfilData.portafolioUrl" target="_blank" class="portafolio-link">🔗 {{ perfilData.portafolioUrl }}</a>
+            </div>
+            }
+        </div>
+    </div>
+
+    } @else {
+    <div class="perfil-card-edit">
+        @if (error)   { <div class="alert alert-error">{{ error }}</div> }
+        @if (success) { <div class="alert alert-success">{{ success }}</div> }
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <div class="edit-section-label">Información profesional</div>
+            <div class="form-grid">
+                <div class="form-group"><label>Especialidad *</label><input formControlName="especialidad" placeholder="Ej: Desarrollador Full-Stack" [class.error]="f['especialidad'].touched && f['especialidad'].invalid"></div>
+                <div class="form-group"><label>Tarifa por hora (Q) *</label><input formControlName="tarifaHora" type="number" placeholder="150" [class.error]="f['tarifaHora'].touched && f['tarifaHora'].invalid"></div>
                 <div class="form-group"><label>Nivel de experiencia</label>
                     <select formControlName="nivelExperiencia">
                         <option value="">Seleccionar...</option>
@@ -60,28 +88,50 @@
                         <option value="SENIOR">Senior</option>
                     </select>
                 </div>
-                <div class="form-group"><label>País de residencia</label><input formControlName="paisResidencia"
-                        placeholder="Guatemala"></div>
+                <div class="form-group"><label>País de residencia</label><input formControlName="paisResidencia" placeholder="Guatemala"></div>
             </div>
-            <div class="form-group"><label>Descripción profesional</label><textarea formControlName="descripcion"
-                    rows="4" placeholder="Cuéntales a los clientes sobre tu experiencia..."></textarea></div>
-            <div class="form-group"><label>URL de portafolio</label><input formControlName="portafolioUrl"
-                    placeholder="https://mi-portafolio.com"></div>
-            <div class="form-group"><label>Habilidades</label>
-                <div class="chips-wrap">
-                    @for (h of habilidades; track h.id) {
-                    <span class="chip" [class.selected]="isSel(h.id)" (click)="toggle(h.id)">{{ h.nombre }}</span>
-                    }
-                </div>
-            </div>
-            <div style="display:flex;gap:12px;flex-wrap:wrap">
-                <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar perfil' }}</button>
-                @if (perfilData) {
-                <button type="button" class="btn btn-secondary" (click)="cancelarEdicion()">Cancelar</button>
+            <div class="form-group"><label>Descripción profesional</label><textarea formControlName="descripcion" rows="4" placeholder="Cuéntales a los clientes sobre tu experiencia..."></textarea></div>
+            <div class="form-group"><label>URL de portafolio</label><input formControlName="portafolioUrl" placeholder="https://mi-portafolio.com"></div>
+
+            <div class="edit-section-label" style="margin-top:1.5rem">Habilidades</div>
+            <p class="habs-hint">Selecciona las que dominas. ¿No encuentras la tuya?
+                <button type="button" class="link-btn" (click)="abrirSolicitud()">Solicitar nueva habilidad</button>
+            </p>
+            <div class="chips-wrap">
+                @for (h of habilidades; track h.id) {
+                <span class="chip" [class.selected]="isSel(h.id)" (click)="toggle(h.id)">{{ h.nombre }}</span>
                 }
             </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar perfil' }}</button>
+                @if (perfilData) { <button type="button" class="btn btn-ghost" (click)="cancelarEdicion()">Cancelar</button> }
+            </div>
         </form>
-        }
+    </div>
+    }
+    }
+
+    @if (showSolModal) {
+    <div class="modal-overlay" (click)="showSolModal=false">
+        <div class="modal-box" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Solicitar nueva habilidad</h2>
+                <button class="modal-close" (click)="showSolModal=false">✕</button>
+            </div>
+            <div class="modal-body">
+                @if (solError)   { <div class="alert alert-error">{{ solError }}</div> }
+                @if (solSuccess) { <div class="alert alert-success">{{ solSuccess }}</div> }
+                <p style="font-size:.9rem;color:#666;margin-bottom:1rem">Si no encuentras tu habilidad en el listado, solicita al administrador que la agregue.</p>
+                <form [formGroup]="solForm">
+                    <div class="form-group"><label>Nombre de la habilidad *</label><input formControlName="nombre" placeholder="Ej: Flutter" [class.error]="solForm.get('nombre')!.touched && solForm.get('nombre')!.invalid"></div>
+                    <div class="form-group"><label>Descripción (opcional)</label><textarea formControlName="descripcion" rows="3" placeholder="Describe brevemente esta habilidad..."></textarea></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" (click)="showSolModal=false">Cancelar</button>
+                <button class="btn btn-primary" (click)="enviarSolicitud()" [disabled]="solSaving">{{ solSaving ? 'Enviando...' : 'Enviar solicitud' }}</button>
+            </div>
+        </div>
     </div>
     }
 </app-layout>

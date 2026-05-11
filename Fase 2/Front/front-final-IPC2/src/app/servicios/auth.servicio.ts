@@ -50,6 +50,26 @@ export class AuthServicio {
         );
     }
 
+    completarPerfil(): void {
+        const user = this._currentUser.value;
+        if (user) {
+            const updated = { ...user, perfilCompleto: true };
+            localStorage.setItem('cw_user', JSON.stringify(updated));
+            this._currentUser.next(updated);
+        }
+    }
+
+    navigateAfterAuth(rol: string, perfilCompleto: boolean): void {
+        const r = rol?.toUpperCase();
+        if (r === 'CLIENTE') {
+            this.router.navigate(perfilCompleto ? ['/cliente/dashboard'] : ['/cliente/perfil']);
+        } else if (r === 'FREELANCER') {
+            this.router.navigate(perfilCompleto ? ['/freelancer/dashboard'] : ['/freelancer/perfil']);
+        } else if (r === 'ADMINISTRADOR') {
+            this.router.navigate(['/admin/dashboard']);
+        }
+    }
+
     logout(): void {
         localStorage.removeItem('cw_user');
         this._currentUser.next(null);

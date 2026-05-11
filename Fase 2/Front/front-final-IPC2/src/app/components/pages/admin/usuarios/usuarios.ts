@@ -38,6 +38,10 @@ export class Usuarios implements OnInit {
   saving = false;
   adminForm!: FormGroup;
 
+  showPerfil = false;
+  perfilLoading = false;
+  perfilData: any = null;
+
   constructor(private service: AdminServicio, private fb: FormBuilder, private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
@@ -82,6 +86,16 @@ export class Usuarios implements OnInit {
     );
   }
 
+  verPerfil(u: any) {
+    this.perfilData = null;
+    this.perfilLoading = true;
+    this.showPerfil = true;
+    this.service.getUsuarioPerfil(u.id).subscribe({
+      next: (r: any) => { this.perfilData = r?.data || r; this.perfilLoading = false; },
+      error: () => { this.perfilLoading = false; },
+    });
+  }
+  
   abrirCrear() {
     this.editMode = false;
     this.adminEditId = null;

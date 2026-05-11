@@ -53,7 +53,14 @@
                 </div>
                 <div class="form-group">
                     <label>Fecha de nacimiento *</label>
-                    <input formControlName="fechaNacimiento" type="date">
+                    <input formControlName="fechaNacimiento" type="date" [max]="maxFechaNac"
+                        [class.error]="f['fechaNacimiento'].touched && f['fechaNacimiento'].invalid">
+                    @if (f['fechaNacimiento'].touched && f['fechaNacimiento'].hasError('menorDeEdad')) {
+                    <span class="field-error">Debes tener al menos 18 años para registrarte como freelancer</span>
+                    }
+                    @if (f['fechaNacimiento'].touched && f['fechaNacimiento'].hasError('required')) {
+                    <span class="field-error">Este campo es requerido</span>
+                    }
                 </div>
             </div>
             <div class="grid-2">

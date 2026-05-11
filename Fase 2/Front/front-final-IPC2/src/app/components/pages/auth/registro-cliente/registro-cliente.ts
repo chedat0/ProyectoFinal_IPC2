@@ -13,7 +13,10 @@ import { Footer } from '../../../shared/footer/footer';
 })
 export class RegistroCliente {
   form: FormGroup;
-  loading = false; error = ''; showPass = false;
+  loading = false; 
+  error = ''; 
+  showPass = false;
+
   constructor(private fb: FormBuilder, private auth: AuthServicio, private router: Router) {
     this.form = this.fb.group({
       nombreCompleto: ['', Validators.required],
@@ -27,12 +30,13 @@ export class RegistroCliente {
     });
   }
   get f() { return this.form.controls; }
+
   submit() {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.loading = true; this.error = '';
     const data = { ...this.form.value, tipoUsuario: 'CLIENTE' };
     this.auth.register(data).subscribe({
-      next: () => this.router.navigate(['/auth/login']),
+      next: () => this.router.navigate(['/cliente/perfil']),
       error: (e: any) => { this.error = e?.message || 'Error al registrar'; this.loading = false; }
     });
   }

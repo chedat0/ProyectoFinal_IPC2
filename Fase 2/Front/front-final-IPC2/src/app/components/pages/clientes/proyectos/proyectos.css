@@ -4,3 +4,9 @@
     gap: .4rem;
     margin-top: .4rem
 }
+.field-error {
+    font-size: .78rem;
+    color: var(--error);
+    margin-top: .25rem;
+    display: block;
+}
